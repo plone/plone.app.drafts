@@ -1,0 +1,41 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:five="http://namespaces.zope.org/five"
+    xmlns:genericsetup="http://namespaces.zope.org/genericsetup"
+    xmlns:zcml="http://namespaces.zope.org/zcml"
+    xmlns:plone="http://namespaces.plone.org/plone"
+    xmlns:grok="http://namespaces.zope.org/grok"
+    i18n_domain="plone.app.drafts">
+
+    <!-- Default syncers -->
+    <!-- SYNCERS not needed with form request replace -->
+    <!--adapter factory=".dexterity.PopulateDraftFromContextSyncer" name="plone.app.drafts.dexterity" />
+    <adapter factory=".dexterity.PopulateContentFromDraftSyncer" name="plone.app.drafts.dexterity" /-->
+ 
+    <!-- trap signal that object has been added (saved; add form) -->
+    <!--subscriber
+        for="plone.app.drafts.interfaces.IDexterityDraftable
+             zope.app.container.interfaces.IObjectAddedEvent" 
+        handler="plone.app.drafts.archetypes.syncDraftOnSave"
+        /-->
+    
+    <!-- trap signal that object had been modified (saved; edit form) -->
+    <!--subscriber
+        for="plone.app.drafts.interfaces.IDexterityDraftable
+             experimental.dexterityz3cformdrafts.interfaces.IObjectEditedEvent"
+        handler="plone.app.drafts.archetypes.syncDraftOnSave"
+        /-->
+        
+    <!-- TODO:  use IAdding?? -->
+    <subscriber
+    for="plone.dexterity.browser.add.DefaultAddForm
+         plone.dexterity.interfaces.IAddBegunEvent"
+    handler=".dexterity.addBegun"
+    />
+    <subscriber
+    for="plone.dexterity.browser.edit.DefaultEditForm
+         plone.dexterity.interfaces.IEditBegunEvent"
+    handler=".dexterity.editBegun"
+    />
+     
+</configure>

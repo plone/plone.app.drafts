@@ -43,5 +43,6 @@
     </genericsetup:importStep>
     
     <include zcml:condition="installed Products.Archetypes" file="archetypes.zcml" />
+    <include zcml:condition="installed plone.dexterity" file="dexterity.zcml" />
 
 </configure>
