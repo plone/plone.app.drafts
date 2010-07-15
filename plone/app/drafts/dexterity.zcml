@@ -16,14 +16,14 @@
     <!--subscriber
         for="plone.app.drafts.interfaces.IDexterityDraftable
              zope.app.container.interfaces.IObjectAddedEvent" 
-        handler="plone.app.drafts.archetypes.syncDraftOnSave"
+        handler=".dexterity.discardDraftsOnCancel"
         /-->
     
     <!-- trap signal that object had been modified (saved; edit form) -->
     <!--subscriber
         for="plone.app.drafts.interfaces.IDexterityDraftable
              experimental.dexterityz3cformdrafts.interfaces.IObjectEditedEvent"
-        handler="plone.app.drafts.archetypes.syncDraftOnSave"
+        handler="plone.app.drafts.dexterity.syncDraftOnSave"
         /-->
         
     <!-- TODO:  use IAdding?? -->
