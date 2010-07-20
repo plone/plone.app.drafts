@@ -18,6 +18,7 @@ from plone.app.drafts.interfaces import IDexterityDraftEditing
 # TODO this should not be here; should be in behaviors
 from plone.app.dexterity.behaviors.drafts import IDexterityDraftSubmitBehavior
 from plone.app.dexterity.behaviors.drafts import IDexterityDraftCancelBehavior
+
 from plone.app.drafts.interfaces import IDexterityDraftContainer
 from plone.app.drafts.interfaces import IDexterityDraftItem
 #from experimental.dexterityz3cformdrafts.drafts import setupDraft
@@ -178,7 +179,7 @@ def getDraftContext(context, request, portal_type, view_name=None):
         return context
         
     context = aq_inner( context ) # New
-    setupDraft( context, request, None )
+    setupDraft( context, request, portal_type )
     
     #request = getattr(context, 'REQUEST', None)
     if request is None:
@@ -273,8 +274,7 @@ def draftRequestForm(form, event):
         if 'plone.app.dexterity.behaviors.drafts.IDexterityDraftSaveBehavior' in fti.behaviors:
             alsoProvides( form, IDexterityDraftSaveBehavior )
  
-    #setupDraft( form.context, request, event )
-    setupDraft( content, request, event )
+    setupDraft( content, request, form.portal_type )
     
     draft = getCurrentDraft(request, create=True)
     if draft is None:
@@ -292,6 +292,7 @@ def draftRequestForm(form, event):
     draft_request_form = getattr( draft, '_form', {} )
     new_request_form = {}
     button_actions = {}
+    fields = getFields( fti.lookupSchema() )
     
     #
     # Edit form must use ignoreContext = True so values are loaded from
@@ -313,11 +314,11 @@ def draftRequestForm(form, event):
             for key, value in draft_request_form.items():
                 new_request_form[key] = value
     # Populate request from draft if its empty
-    elif request.form.has_key('-C') and len(draft_request_form) != 0:
-        for key, value in draft_request_form.items():
-            new_request_form[key] = value
+    # (should be handled below now)
+    #elif request.form.has_key('-C') and len(draft_request_form) != 0:
+    #    for key, value in draft_request_form.items():
+    #        new_request_form[key] = value
     else:    
-        fields = getFields( fti.lookupSchema() )
         for key, value in request.form.items():
             # Don't save button actions (or recursion can happen)
             if key.startswith( 'form.buttons' ):
@@ -332,11 +333,7 @@ def draftRequestForm(form, event):
             # instancemethod objects (FileUpload is ) which can not be pickled
             field = fields.get(key[key.rfind('.')+1:], None)
             if field is not None:
-                #widget = zope.component.getMultiAdapter( (field, request), interfaces.IFieldWidget )            
-                #extracted_value = widget.extract(value)
-                #converted_value = interfaces.IDataConverter(widget).toFieldValue( value )
-                #converted_value = interfaces.IDataConverter(widget).toWidgetValue( value )
-                
+                # INamed Hack...
                 # Need to handle INamed fields special since we can not
                 # store the FileUpload object directly because it is
                 # an instancemethod
@@ -359,7 +356,7 @@ def draftRequestForm(form, event):
                             #if converted_value is not None:
                             if converted_value is None:
                                 continue
-                                
+                            
                         value = converted_value #This may be enough to update request.form?
                         
                 # Can not save instancemethods, so skip it (dunno where this
@@ -373,11 +370,15 @@ def draftRequestForm(form, event):
             # (set attribute directly; not just on form)
             # if this works; dont set anything not in schema
             #setattr( draft, key[13:], value )
+            
+    # Draft may still have some stored fields not in request; so get them
+    # (only copy over schema fields though) -- needed for ajax updated forms
+    for key, value in draft_request_form.items():
+        if not request.form.has_key(key) and fields.has_key(key[key.rfind('.')+1:]):
+            new_request_form[key] = value
         
     # Re-wrtie the form from draft incase anything was changed since last request
     setattr( draft, '_form', new_request_form.copy() )
-    #form.context.REQUEST.form = new_request_form #.copy()
-    #form.request.form = form.context.REQUEST.form #may not need this; same object?
     request.form = new_request_form
     
     # Add back in any button actions that were removed to request
@@ -394,7 +395,7 @@ from plone.app.drafts.interfaces import IDraftStorage
 from plone.app.drafts.interfaces import ICurrentDraftManagement
 
 # Helper methods
-def setupDraft(context, request=None, event=None):
+def setupDraft(context, request=None, portal_type=None):
     """When we enter the edit screen, set up the target key and draft cookie
     path. If there is exactly one draft for the given user id and target key,
     consider that to be the current draft. Also mark the request with
@@ -411,6 +412,8 @@ def setupDraft(context, request=None, event=None):
     
     # Update target key regardless - we could have a stale cookie
     current.targetKey = getDexterityObjectKey(context)
+    if portal_type is not None:
+        current.targetKey += ':' + portal_type
     
     if current.userId is None:
         # More than likely user has not yet been validated, so try to figure 
