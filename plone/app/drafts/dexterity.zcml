@@ -26,16 +26,5 @@
         handler="plone.app.drafts.dexterity.syncDraftOnSave"
         /-->
         
-    <!-- TODO:  use IAdding?? -->
-    <subscriber
-    for="plone.dexterity.browser.add.DefaultAddForm
-         plone.dexterity.interfaces.IAddBegunEvent"
-    handler=".dexterity.addBegun"
-    />
-    <subscriber
-    for="plone.dexterity.browser.edit.DefaultEditForm
-         plone.dexterity.interfaces.IEditBegunEvent"
-    handler=".dexterity.editBegun"
-    />
      
 </configure>
