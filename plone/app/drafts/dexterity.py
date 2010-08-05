@@ -1,38 +1,12 @@
-import zope.component
-from zope.interface import alsoProvides
-
-from Acquisition.interfaces import IAcquirer
-from Acquisition import aq_inner
-
-from plone.app.drafts.utils import syncDraft
-from plone.app.drafts.utils import getCurrentDraft
- 
-from plone.dexterity.interfaces import IDexterityContainer, IDexterityItem
-from plone.dexterity.interfaces import IDexterityFTI
-from plone.dexterity.utils import createContent
-
-from plone.app.drafts.interfaces import IDexterityDraft
-from plone.app.drafts.interfaces import IDexterityDraftAdding
-from plone.app.drafts.interfaces import IDexterityDraftEditing
-
-# TODO this should not be here; should be in behaviors
-from plone.app.dexterity.behaviors.drafts import IDexterityDraftSubmitBehavior
-from plone.app.dexterity.behaviors.drafts import IDexterityDraftCancelBehavior
-
-from plone.app.drafts.interfaces import IDexterityDraftContainer
-from plone.app.drafts.interfaces import IDexterityDraftItem
-#from experimental.dexterityz3cformdrafts.drafts import setupDraft
-
-################################################################################
 
 from zope.component import queryUtility
 
 from plone.app.drafts.interfaces import IDraftStorage
 from plone.app.drafts.interfaces import ICurrentDraftManagement
 
+from plone.app.drafts.utils import getDefaultKey
 from plone.app.drafts.utils import syncDraft
 from plone.app.drafts.utils import getCurrentDraft
-from plone.app.drafts.utils import getDefaultKey
 
 from Acquisition import aq_parent
 from Products.CMFCore.utils import getToolByName
@@ -185,92 +159,8 @@ def getDexterityObjectKey(context):
     
     return "%s:%s" % (defaultKey, tempFolder.getId(),)
 
-# Main event handlers
-
-##def beginDrafting(context, event):
-##    """When we enter the edit screen, set up the target key and draft cookie
-##    path. If there is exactly one draft for the given user id and target key,
-##    consider that to be the current draft. Also mark the request with
-##    IDrafting if applicable.
-##    """
-##    
-##    storage = queryUtility(IDraftStorage)
-##    if storage is None or not storage.enabled:
-##        return
-##    
-##    request = getattr(context, 'REQUEST', None)
-##    if request is None:
-##        return
-##    
-##    current = ICurrentDraftManagement(request)
-##    
-##    # Update target key regardless - we could have a stale cookie
-##    current.targetKey = getDexterityObjectKey(context)
-##    
-##    if current.draftName is None:
-##        drafts = storage.getDrafts(current.userId, current.targetKey)
-##        if len(drafts) == 1:
-##            current.draftName = tuple(drafts.keys())[0]
-##    
-##    # Save the path now so that we can use it again later, even on URLs 
-##    # (e.g. in AJAX dialogues) that are below this path.
-##    current.path = current.defaultPath
-##    
-##    current.mark()
-##    current.save()
-    
-def syncDraftOnSave(context, event):
-    """When the edit form is saved, sync the draft (if set) and discard it.
-    Also discard the drafting cookies.
-    """
-    
-    storage = queryUtility(IDraftStorage)
-    if storage is None or not storage.enabled:
-        return
-    
-    request = getattr(context, 'REQUEST', None)
-    if request is None:
-        return
-    
-    draft = getCurrentDraft(request)
-    if draft is not None:
-        syncDraft(draft, context)
-    
-    current = ICurrentDraftManagement(request)    
-    if current.userId and current.targetKey:
-        storage.discardDrafts(current.userId, current.targetKey)
-    
-    current.discard()
-    
-def discardDraftsOnCancel(context, event):
-    """When the edit form is cancelled, discard any unused drafts and
-    remove the drafting cookies.
-    """
-    
-    storage = queryUtility(IDraftStorage)
-    if storage is None or not storage.enabled:
-        return
-    
-    request = getattr(context, 'REQUEST', None)
-    if request is None:
-        return
-    
-    current = ICurrentDraftManagement(request)
-    
-    if current.userId and current.targetKey:
-        storage.discardDrafts(current.userId, current.targetKey)
-    
-    current.discard()
-    
-################################################################################
-
-from zope.component import queryUtility
-
-from plone.app.drafts.interfaces import IDraftStorage
-from plone.app.drafts.interfaces import ICurrentDraftManagement
-
 # Helper methods
-def setupDraft(context, request=None, portal_type=None):
+def beginDrafting(context, request=None, portal_type=None):
     """When we enter the edit screen, set up the target key and draft cookie
     path. If there is exactly one draft for the given user id and target key,
     consider that to be the current draft. Also mark the request with
@@ -325,3 +215,47 @@ def setupDraft(context, request=None, portal_type=None):
     current.save()
     
     return current
+    
+def syncDraftOnSave(context, event):
+    """When the edit form is saved, sync the draft (if set) and discard it.
+    Also discard the drafting cookies.
+    """
+    
+    storage = queryUtility(IDraftStorage)
+    if storage is None or not storage.enabled:
+        return
+    
+    request = getattr(context, 'REQUEST', None)
+    if request is None:
+        return
+    
+    draft = getCurrentDraft(request)
+    if draft is not None:
+        syncDraft(draft, context)
+    
+    current = ICurrentDraftManagement(request)    
+    if current.userId and current.targetKey:
+        storage.discardDrafts(current.userId, current.targetKey)
+    
+    current.discard()
+    
+def discardDraftsOnCancel(context, event):
+    """When the edit form is cancelled, discard any unused drafts and
+    remove the drafting cookies.
+    """
+    
+    storage = queryUtility(IDraftStorage)
+    if storage is None or not storage.enabled:
+        return
+    
+    request = getattr(context, 'REQUEST', None)
+    if request is None:
+        return
+    
+    current = ICurrentDraftManagement(request)
+    
+    if current.userId and current.targetKey:
+        storage.discardDrafts(current.userId, current.targetKey)
+    
+    current.discard()
+    
