@@ -11,16 +11,19 @@ from plone.app.drafts.utils import getCurrentDraft
 from Acquisition import aq_parent
 from Products.CMFCore.utils import getToolByName
 
-
 # Helper methods
-
-# TODO:  Get rid of archtype specific stuff here
-def getDexterityObjectKey(context):
+def getDexterityObjectKey(context, portal_type=None):
     """Get a key for an Dexterity object. This will be a string
     representation of its intid, unless it is in the portal_factory, in
     which case it'll be the a string like
     "${parent_intid}:portal_factory/${portal_type}"
     """
+    
+    # Try to find the context portal type so we can append it to the draft
+    # name otherwise we can't locate drafts for both a container+edit and 
+    # an item+add on the same content type
+    if portal_type is None:
+        portal_type = getattr( context, 'portal_type', 'None' )
     
     portal_factory = getToolByName(context, 'portal_factory', None)
     if portal_factory is None or not portal_factory.isTemporary(context):
@@ -29,7 +32,7 @@ def getDexterityObjectKey(context):
         if defaultKey is None:
             # probably the portal root
             defaultKey = '0'
-        return defaultKey
+        return "%s:%s" % (defaultKey, portal_type,)
     
     tempFolder = aq_parent(context)
     folder = aq_parent(aq_parent(tempFolder))
@@ -39,9 +42,8 @@ def getDexterityObjectKey(context):
         # probably the portal root
         defaultKey = '0'
     
-    return "%s:%s" % (defaultKey, tempFolder.getId(),)
+    return "%s:%s:%s" % (defaultKey, tempFolder.getId(), portal_type,)
 
-# Helper methods
 def beginDrafting(context, request=None, portal_type=None):
     """When we enter the edit screen, set up the target key and draft cookie
     path. If there is exactly one draft for the given user id and target key,
@@ -58,7 +60,7 @@ def beginDrafting(context, request=None, portal_type=None):
     current = ICurrentDraftManagement(request)
     
     # Update target key regardless - we could have a stale cookie
-    current.targetKey = getDexterityObjectKey(context)
+    current.targetKey = getDexterityObjectKey(context, portal_type)
     
     if current.userId is None:
         # More than likely user has not yet been validated, so try to figure 
