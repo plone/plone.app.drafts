@@ -52,11 +52,11 @@ def beginDrafting(context, request=None, portal_type=None):
     IDrafting if applicable.
     """
     if request is None:
-        return None
+        return
 
     storage = queryUtility(IDraftStorage)
     if storage is None or not storage.enabled:
-        return None
+        return
 
     current = ICurrentDraftManagement(request)
 
@@ -78,13 +78,13 @@ def beginDrafting(context, request=None, portal_type=None):
             user_ids = root_pluggable_auth_service._extractUserIds(request, plugins)
 
         if len(user_ids) == 0:
-            return None
+            return
 
         user_id, login = user_ids[0]
         current.userId = user_id
 
     if current.userId is None:
-        return None
+        return
 
     if current.draftName is None:
         drafts = storage.getDrafts(current.userId, current.targetKey)
@@ -99,7 +99,7 @@ def beginDrafting(context, request=None, portal_type=None):
     current.mark()
     current.save()
 
-    return current
+    #return current
 
 
 def syncDraftOnSave(context, event):
