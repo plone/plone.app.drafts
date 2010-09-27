@@ -13,26 +13,25 @@ from Products.CMFCore.utils import getToolByName
 
 
 # Helper methods
-def getDexterityObjectKey(context, portal_type=None):
+def getDexterityObjectKey(context, form):
     """Get a key for an Dexterity object. This will be a string
-    representation of its intid, unless it is in the portal_factory, in
+    representation of its intid, unless it is in the dotted form name, in
     which case it'll be the a string like
-    "${parent_intid}:portal_factory/${portal_type}"
+    "${parent_intid}:portal_factory/${dotted.form.name}"
     """
 
-    # Try to find the context portal type so we can append it to the draft
-    # name otherwise we can't locate drafts for both a container+edit and
-    # an item+add on the same content type
-    if portal_type is None:
-        portal_type = getattr(context, 'portal_type', 'None')
+    # Grab the dotted form name otherwise we can't locate drafts for both a
+    # container+edit and an item+add on the same content item
+    # (remove dots since its going in the cookie)
+    name = ''.join(form.__module__.split('.'))
 
     portal_factory = getToolByName(context, 'portal_factory', None)
-    if portal_factory is None or not portal_factory.isTemporary(context):
+    if portal_factory is None:  # or not portal_factory.isTemporary(context):
         defaultKey = getDefaultKey(context)
         if defaultKey is None:
             # probably the portal root
             defaultKey = '0'
-        return "%s:%s" % (defaultKey, portal_type,)
+        return "%s:%s" % (defaultKey, name,)
 
     tempFolder = aq_parent(context)
     folder = aq_parent(aq_parent(tempFolder))
@@ -42,15 +41,17 @@ def getDexterityObjectKey(context, portal_type=None):
         # probably the portal root
         defaultKey = '0'
 
-    return "%s:%s:%s" % (defaultKey, tempFolder.getId(), portal_type,)
+    return "%s:%s:%s" % (defaultKey, tempFolder.getId(), name,)
 
 
-def beginDrafting(context, request=None, portal_type=None):
+def beginDrafting(context, form):
     """When we enter the edit screen, set up the target key and draft cookie
     path. If there is exactly one draft for the given user id and target key,
     consider that to be the current draft. Also mark the request with
     IDrafting if applicable.
     """
+    request = form.request
+
     if request is None:
         return
 
@@ -61,11 +62,14 @@ def beginDrafting(context, request=None, portal_type=None):
     current = ICurrentDraftManagement(request)
 
     # Update target key regardless - we could have a stale cookie
-    current.targetKey = getDexterityObjectKey(context, portal_type)
+    current.targetKey = getDexterityObjectKey(context, form)
 
     if current.userId is None:
+        # XXX: Remove; was to create a draft before authorized (in adapter
+        # __init__.  There should be no need to do this anymore
+        #
         # More than likely user has not yet been validated, so try to figure
-        # it out
+        # it out (++widgets++ traversal)
         plone_site = context.unrestrictedTraverse('/' + context.getPhysicalPath()[1])
         plone_pluggable_auth_service = plone_site.__allow_groups__
         plugins = plone_site.__allow_groups__._getOb('plugins')
@@ -97,9 +101,11 @@ def beginDrafting(context, request=None, portal_type=None):
 
     # Mark context with IDraft
     current.mark()
+
+    # Set up cookies
     current.save()
 
-    #return current
+    return current
 
 
 def syncDraftOnSave(context, event):

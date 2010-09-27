@@ -59,7 +59,7 @@ class DraftProxy(object):
     read from the target object instead.
 
     Attribute deletions are saved in a set ``draft._proxyDeleted``. Annotation
-    key deletions are saved in a set ``draft._proxyAnnotationsDeleted``.
+    key deletions are saved in a set ``deaft._proxyAnnotationsDeleted``.
     """
 
     __providedBy__ = ProxySpecification()
