@@ -27,9 +27,11 @@ class ProxySpecification(ObjectSpecificationDescriptor):
             return getObjectSpecification(cls)
 
         # Find the cached value and return it if possible
-        #cached = getattr(inst, '_v__providedBy__', None)
-        #if cached is not None:
-        #    return cached
+        # Only want it is its stored on draft otherwise it will not contain
+        # any draft values
+        cached = getattr(inst._DraftProxy__draft, '_v__providedBy__', None)
+        if cached is not None:
+            return cached
 
         # Get interfaces directly provided by the draft proxy
         provided = getattr(inst, '__provides__', None)
