@@ -70,10 +70,13 @@ def beginDrafting(context, form):
         #
         # More than likely user has not yet been validated, so try to figure
         # it out (++widgets++ traversal)
-        plone_site = context.unrestrictedTraverse('/' + context.getPhysicalPath()[1])
-        plone_pluggable_auth_service = plone_site.__allow_groups__
-        plugins = plone_site.__allow_groups__._getOb('plugins')
-        user_ids = plone_pluggable_auth_service._extractUserIds(request, plugins)
+        try:
+            plone_site = context.unrestrictedTraverse('/' + context.getPhysicalPath()[1])
+            plone_pluggable_auth_service = plone_site.__allow_groups__
+            plugins = plone_site.__allow_groups__._getOb('plugins')
+            user_ids = plone_pluggable_auth_service._extractUserIds(request, plugins)
+        except:
+            return
 
         if len(user_ids) == 0:
             root = context.unrestrictedTraverse('/')
