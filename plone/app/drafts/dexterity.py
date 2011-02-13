@@ -26,7 +26,7 @@ def getDexterityObjectKey(context, form):
     name = ''.join(form.__module__.split('.'))
 
     portal_factory = getToolByName(context, 'portal_factory', None)
-    if portal_factory is None:  # or not portal_factory.isTemporary(context):
+    if portal_factory is None or not portal_factory.isTemporary(context):
         defaultKey = getDefaultKey(context)
         if defaultKey is None:
             # probably the portal root
