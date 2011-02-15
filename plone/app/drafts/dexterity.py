@@ -65,11 +65,11 @@ def beginDrafting(context, form):
     current.targetKey = getDexterityObjectKey(context, form)
 
     if current.userId is None:
-        # XXX: Remove; was to create a draft before authorized (in adapter
-        # __init__.  There should be no need to do this anymore
+        # XXX:  There has to be a better way to do this :)
         #
-        # More than likely user has not yet been validated, so try to figure
-        # it out (++widgets++ traversal)
+        # In some cases the user has not yet been validated yet (++widget++
+        # traversal) and we need to obtain a user name so we can associate the
+        # draft to a user
         try:
             plone_site = context.unrestrictedTraverse('/' + context.getPhysicalPath()[1])
             plone_pluggable_auth_service = plone_site.__allow_groups__
