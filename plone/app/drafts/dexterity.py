@@ -1,5 +1,5 @@
-
 from zope.component import queryUtility
+from zope.app.component.hooks import getSite
 
 from plone.app.drafts.interfaces import IDraftStorage
 from plone.app.drafts.interfaces import ICurrentDraftManagement
@@ -70,8 +70,9 @@ def beginDrafting(context, form):
         # In some cases the user has not yet been validated yet (++widget++
         # traversal) and we need to obtain a user name so we can associate the
         # draft to a user
+        portal = getSite()
         try:
-            plone_site = context.unrestrictedTraverse('/' + context.getPhysicalPath()[1])
+            plone_site = portal.unrestrictedTraverse('/' + portal.getPhysicalPath()[1])
             plone_pluggable_auth_service = plone_site.__allow_groups__
             plugins = plone_site.__allow_groups__._getOb('plugins')
             user_ids = plone_pluggable_auth_service._extractUserIds(request, plugins)
@@ -79,7 +80,7 @@ def beginDrafting(context, form):
             return
 
         if len(user_ids) == 0:
-            root = context.unrestrictedTraverse('/')
+            root = portal.unrestrictedTraverse('/')
             root_pluggable_auth_service = root.__allow_groups__
             plugins = root.__allow_groups__._getOb('plugins')
             user_ids = root_pluggable_auth_service._extractUserIds(request, plugins)
