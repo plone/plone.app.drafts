@@ -5,7 +5,7 @@ from setuptools import setup
 import os
 
 
-version = '1.1.3'
+version = '1.1.4.dev0'
 
 setup(name='plone.app.drafts',
       version=version,
