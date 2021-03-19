@@ -8,7 +8,7 @@
     <plone:behavior
         name="plone.draftable"
         title="Drafting support"
-        description="Enables autosaved drafting on add an edit forms"
+        description="Enables autosaved drafting on add and edit forms"
         provides="plone.app.drafts.interfaces.IDraftable"
         marker="plone.app.drafts.interfaces.IDraftable"
     />
