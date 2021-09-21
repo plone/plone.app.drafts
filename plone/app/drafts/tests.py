@@ -765,6 +765,14 @@ class TestDexterityIntegration(unittest.TestCase):
 
         transaction.commit()
 
+    def get_portal_target_key(self):
+        try:
+            # Plone 6
+            return IUUID(self.portal)
+        except TypeError:
+            # Plone <6
+            return "%2B%2Badd%2B%2BMyDocument"
+
     def test_add_to_portal_root_cancel(self):
         browser = Browser(self.layer["app"])
         browser.handleErrors = False
@@ -782,7 +790,7 @@ class TestDexterityIntegration(unittest.TestCase):
         cookies = browser.cookies.forURL(browser.url)
         self.assertEqual('"/plone"', cookies["plone.app.drafts.path"])
         self.assertEqual(
-            '"{0}"'.format(IUUID(self.portal)),
+            '"{0}"'.format(self.get_portal_target_key()),
             cookies["plone.app.drafts.targetKey"],
         )
         self.assertNotIn(
@@ -822,7 +830,7 @@ class TestDexterityIntegration(unittest.TestCase):
         cookies = browser.cookies.forURL(browser.url)
         self.assertEqual('"/plone"', cookies["plone.app.drafts.path"])
         self.assertEqual(
-            '"{0}"'.format(IUUID(self.portal)),
+            '"{0}"'.format(self.get_portal_target_key()),
             cookies["plone.app.drafts.targetKey"],
         )
         self.assertNotIn(
