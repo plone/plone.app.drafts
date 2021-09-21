@@ -36,8 +36,4 @@
     <include zcml:condition="installed plone.behavior" file="behaviors.zcml" />
     <include zcml:condition="installed plone.app.dexterity" file="dexterity.zcml" />
 
-    <!--
-    <include zcml:condition="installed Products.Archetypes" file="archetypes.zcml" />
-    -->
-
 </configure>

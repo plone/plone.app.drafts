@@ -116,7 +116,7 @@ class IDraftSyncer(Interface):
 class ICurrentDraftManagement(Interface):
     """Adapt the request to this interface to access low-level "current draft"
     management. For the most part, this is done automatically be the add/edit
-    form integration (e.g. see ``archetypes.py``).
+    form integration.
 
     Use the ``getCurrentDraft()`` function in ``utils.py`` for a simpler
     interface to get hold of (and optionally create on-demand) a draft.

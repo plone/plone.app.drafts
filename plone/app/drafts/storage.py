@@ -20,6 +20,7 @@ class Storage(SimpleItem):
     ) + SimpleItem.manage_options
 
     enabled = True
+    drafts = None
 
     def __init__(self, id='portal_drafts'):
         self.id = id

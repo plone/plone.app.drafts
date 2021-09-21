@@ -5,7 +5,7 @@ from setuptools import setup
 import os
 
 
-version = '1.1.4.dev0'
+version = '2.0.0.dev0'
 
 setup(name='plone.app.drafts',
       version=version,
@@ -18,15 +18,14 @@ setup(name='plone.app.drafts',
           'Development Status :: 4 - Beta',
           'Environment :: Web Environment',
           'Framework :: Plone',
-          'Framework :: Plone :: 4.3',
-          'Framework :: Plone :: 5.0',
-          'Framework :: Plone :: 5.1',
           'Framework :: Plone :: 5.2',
+          'Framework :: Plone :: 6.0',
           'License :: OSI Approved :: GNU General Public License v2 (GPLv2)',
           'Programming Language :: Python',
           'Programming Language :: Python :: 2.7',
-          'Programming Language :: Python :: 3.6',
           'Programming Language :: Python :: 3.7',
+          'Programming Language :: Python :: 3.8',
+          'Programming Language :: Python :: 3.9',
           'Topic :: Internet :: WWW/HTTP',
           'Topic :: Internet :: WWW/HTTP :: Dynamic Content',
           'Topic :: Software Development :: Libraries :: Python Modules',
@@ -55,9 +54,6 @@ setup(name='plone.app.drafts',
           'test': [
               'plone.app.testing',
               'plone.app.dexterity',
-          ],
-          'test_atct': [
-              'Products.ATContentTypes'
           ],
       },
       entry_points="""

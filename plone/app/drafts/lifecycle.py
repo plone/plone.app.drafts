@@ -2,7 +2,7 @@
 from plone.app.drafts.interfaces import ICurrentDraftManagement
 from plone.app.drafts.interfaces import IDraftStorage
 from plone.app.drafts.utils import getCurrentDraft
-from plone.app.drafts.utils import getObjectKey
+from plone.app.drafts.utils import getDefaultKey
 from plone.app.drafts.utils import syncDraft
 from zope.component import queryUtility
 
@@ -28,7 +28,7 @@ def beginDrafting(context, event):
     current = ICurrentDraftManagement(request)
 
     # Update target key regardless - we could have a stale cookie
-    current.targetKey = getObjectKey(context)
+    current.targetKey = getDefaultKey(context)
 
     if current.draftName is None:
         drafts = storage.getDrafts(current.userId, current.targetKey)
