@@ -19,7 +19,6 @@ from zope.publisher.interfaces import IRequest
 @adapter(IRequest)
 @implementer(ICurrentDraftManagement)
 class DefaultCurrentDraftManagement(object):
-
     def __init__(self, request):
         self.request = request
         self.annotations = IAnnotations(request)
@@ -82,12 +81,13 @@ class DefaultCurrentDraftManagement(object):
     def draft(self):
         draft = self.annotations.get(DRAFT_KEY, None)
         if draft is None:
-            if self.userId is not None and \
-                    self.targetKey is not None and \
-                    self.draftName is not None:
+            if (
+                self.userId is not None
+                and self.targetKey is not None
+                and self.draftName is not None
+            ):
                 storage = getUtility(IDraftStorage)
-                draft = storage.getDraft(
-                    self.userId, self.targetKey, self.draftName)
+                draft = storage.getDraft(self.userId, self.targetKey, self.draftName)
         return draft
 
     @draft.setter
@@ -114,8 +114,10 @@ class DefaultCurrentDraftManagement(object):
                 path=path,
             )
 
-        if self.draftName is not None and \
-                DRAFT_NAME_KEY not in self.request.response.cookies:
+        if (
+            self.draftName is not None
+            and DRAFT_NAME_KEY not in self.request.response.cookies
+        ):
             self.request.response.setCookie(
                 DRAFT_NAME_KEY,
                 self.draftName,
@@ -123,14 +125,18 @@ class DefaultCurrentDraftManagement(object):
             )
 
         # Save userId, because it may be needed to access draft during traverse
-        if self.draftName is not None and \
-                self.userId is not None and \
-                USERID_KEY not in self.request.response.cookies:
+        if (
+            self.draftName is not None
+            and self.userId is not None
+            and USERID_KEY not in self.request.response.cookies
+        ):
             self.request.response.setCookie(USERID_KEY, self.userId, path=path)
 
         # Save the path only if we set it explicitly during this request.
-        if self.annotations.get(PATH_KEY, None) is not None and \
-                PATH_KEY not in self.request.response.cookies:
+        if (
+            self.annotations.get(PATH_KEY, None) is not None
+            and PATH_KEY not in self.request.response.cookies
+        ):
             self.request.response.setCookie(PATH_KEY, self.path, path=path)
 
         return True
@@ -145,12 +151,12 @@ class DefaultCurrentDraftManagement(object):
     @property
     def defaultPath(self):
         # Get the context minus the view
-        url = '/'.join(self.request.getURL().split('/')[:-1])
-        server = self.request.get('SERVER_URL')
-        path = url[len(server):]
+        url = "/".join(self.request.getURL().split("/")[:-1])
+        server = self.request.get("SERVER_URL")
+        path = url[len(server) :]
         if not path:
-            return '/'
-        elif path.endswith('/'):
+            return "/"
+        elif path.endswith("/"):
             return path[:-1]
         else:
             return path

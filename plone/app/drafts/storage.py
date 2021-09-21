@@ -8,21 +8,20 @@ from zope.interface import implementer
 
 @implementer(IDraftStorage)
 class Storage(SimpleItem):
-    """The draft storage
-    """
+    """The draft storage"""
 
-    id = 'portal_drafts'
-    title = 'Drafts in progress for content items being edited'
-    meta_type = 'Plone Drafts Storage'
+    id = "portal_drafts"
+    title = "Drafts in progress for content items being edited"
+    meta_type = "Plone Drafts Storage"
 
     manage_options = (
-        dict(label='Drafts', action='@@overview'),
+        dict(label="Drafts", action="@@overview"),
     ) + SimpleItem.manage_options
 
     enabled = True
     drafts = None
 
-    def __init__(self, id='portal_drafts'):
+    def __init__(self, id="portal_drafts"):
         self.id = id
         self.drafts = OOBTree()
 
@@ -42,13 +41,22 @@ class Storage(SimpleItem):
         draft = factory(userId, targetKey)
 
         if not draft.__name__:
-            draft.__name__ = u'draft'
+            draft.__name__ = u"draft"
 
         if draft.__name__ in container:
             idx = len(container)
-            while u'{0}-{1}'.format(draft.__name__, idx, ) in container:
+            while (
+                u"{0}-{1}".format(
+                    draft.__name__,
+                    idx,
+                )
+                in container
+            ):
                 idx += 1
-            draft.__name__ = u'{0}-{1}'.format(draft.__name__, idx, )
+            draft.__name__ = u"{0}-{1}".format(
+                draft.__name__,
+                idx,
+            )
 
         container[draft.__name__] = draft
         return draft

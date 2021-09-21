@@ -25,7 +25,7 @@ class ProxySpecification(ObjectSpecificationDescriptor):
             return getObjectSpecification(cls)
 
         # Find the data we need to know if our cache needs to be invalidated
-        direct_spec = getattr(inst, '__provides__', None)
+        direct_spec = getattr(inst, "__provides__", None)
 
         # If the draft proxy doesn't have a __provides__ attribute, get the
         # interfaces implied by the class as a starting point.
@@ -33,25 +33,24 @@ class ProxySpecification(ObjectSpecificationDescriptor):
             direct_spec = implementedBy(cls)
 
         # Get the interfaces provided by the target
-        target = aq_base(inst.__dict__.get('_DraftProxy__target'))
+        target = aq_base(inst.__dict__.get("_DraftProxy__target"))
         if target is None:
             return direct_spec
         target_spec = providedBy(target)
 
         # Find the cached value
-        cache = inst.__dict__.get('_DraftProxy__providedBy__', None)
+        cache = inst.__dict__.get("_DraftProxy__providedBy__", None)
         updated = target._p_mtime, direct_spec, target_spec
 
         # See if we have a valid cache. Reasons to do this include:
         if cache is not None:
-            cached_mtime, cached_direct_spec, \
-                cached_target_spec, cached_spec = cache
+            cached_mtime, cached_direct_spec, cached_target_spec, cached_spec = cache
 
             if cache[:-1] == updated:
                 return cached_spec
 
         spec = direct_spec + target_spec
-        inst.__dict__['_DraftProxy__providedBy__'] = updated + (spec,)
+        inst.__dict__["_DraftProxy__providedBy__"] = updated + (spec,)
 
         return spec
 
@@ -71,12 +70,12 @@ class DraftProxy(object):
     __providedBy__ = ProxySpecification()
 
     def __init__(self, draft, target):
-        self.__dict__['_DraftProxy__draft'] = draft
-        self.__dict__['_DraftProxy__target'] = target
-        self.__dict__['_DraftProxy__providedBy__'] = None
+        self.__dict__["_DraftProxy__draft"] = draft
+        self.__dict__["_DraftProxy__target"] = target
+        self.__dict__["_DraftProxy__providedBy__"] = None
 
     def __getattr__(self, name):
-        deleted = getattr(self.__draft, '_proxyDeleted', set())
+        deleted = getattr(self.__draft, "_proxyDeleted", set())
         if name in deleted:
             raise AttributeError(name)
 
@@ -88,7 +87,7 @@ class DraftProxy(object):
     def __setattr__(self, name, value):
         setattr(self.__draft, name, value)
 
-        deleted = getattr(self.__draft, '_proxyDeleted', set())
+        deleted = getattr(self.__draft, "_proxyDeleted", set())
         if name in deleted:
             deleted.remove(name)
             self.__draft._p_changed = True
@@ -97,10 +96,10 @@ class DraftProxy(object):
         getattr(self, name)  # allow attribute error to be raised
 
         # record deletion
-        deleted = getattr(self.__draft, '_proxyDeleted', set())
+        deleted = getattr(self.__draft, "_proxyDeleted", set())
         if name not in deleted:
             deleted.add(name)
-            setattr(self.__draft, '_proxyDeleted', deleted)
+            setattr(self.__draft, "_proxyDeleted", deleted)
 
         # only delete on draft
         if getattr(self.__draft, name, None):
@@ -110,8 +109,7 @@ class DraftProxy(object):
 @adapter(IDraftProxy)
 @implementer(IAnnotations)
 class AliasAnnotations(MutableMapping):
-    """Layer draft annotations atop target annotations
-    """
+    """Layer draft annotations atop target annotations"""
 
     def __init__(self, proxy):
         self.proxy = proxy
@@ -123,12 +121,11 @@ class AliasAnnotations(MutableMapping):
         self.targetAnnotations = IAnnotations(self.target)
 
     def __bool__(self):
-        return self.targetAnnotations.__bool__() or \
-            self.draftAnnotations.__bool__()
+        return self.targetAnnotations.__bool__() or self.draftAnnotations.__bool__()
 
     def get(self, key, default=None):
 
-        deleted = getattr(self.draft, '_proxyAnnotationsDeleted', set())
+        deleted = getattr(self.draft, "_proxyAnnotationsDeleted", set())
         if key in deleted:
             return default
 
@@ -156,7 +153,7 @@ class AliasAnnotations(MutableMapping):
         return len(self.draftAnnotations)
 
     def keys(self):
-        deleted = getattr(self.draft, '_proxyAnnotationsDeleted', set())
+        deleted = getattr(self.draft, "_proxyAnnotationsDeleted", set())
         keys = set(self.draftAnnotations.keys())
         keys.update(self.targetAnnotations.keys())
         return tuple(keys - deleted)
@@ -164,7 +161,7 @@ class AliasAnnotations(MutableMapping):
     def __setitem__(self, key, value):
         self.draftAnnotations[key] = value
 
-        deleted = getattr(self.draft, '_proxyAnnotationsDeleted', set())
+        deleted = getattr(self.draft, "_proxyAnnotationsDeleted", set())
         if key in deleted:
             deleted.remove(key)
             self.draft._proxyAnnotationsDeleted = deleted
@@ -174,7 +171,7 @@ class AliasAnnotations(MutableMapping):
         if value is _marker:
             self[key] = value = default
 
-            deleted = getattr(self.draft, '_proxyAnnotationsDeleted', set())
+            deleted = getattr(self.draft, "_proxyAnnotationsDeleted", set())
             if key in deleted:
                 deleted.remove(key)
                 self.draft._proxyAnnotationsDeleted = deleted
@@ -187,6 +184,6 @@ class AliasAnnotations(MutableMapping):
         if key in self.draftAnnotations:
             del self.draftAnnotations[key]
 
-        deleted = getattr(self.draft, '_proxyAnnotationsDeleted', set())
+        deleted = getattr(self.draft, "_proxyAnnotationsDeleted", set())
         deleted.add(key)
         self.draft._proxyAnnotationsDeleted = deleted

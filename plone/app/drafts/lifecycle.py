@@ -21,7 +21,7 @@ def beginDrafting(context, event):
     if storage is None or not storage.enabled:
         return
 
-    request = getattr(context, 'REQUEST', None)
+    request = getattr(context, "REQUEST", None)
     if request is None:
         return
 
@@ -52,7 +52,7 @@ def syncDraftOnSave(context, event):
     if storage is None or not storage.enabled:
         return
 
-    request = getattr(context, 'REQUEST', None)
+    request = getattr(context, "REQUEST", None)
     if request is None:
         return
 
@@ -76,7 +76,7 @@ def discardDraftsOnCancel(context, event):
     if storage is None or not storage.enabled:
         return
 
-    request = getattr(context, 'REQUEST', None)
+    request = getattr(context, "REQUEST", None)
     if request is None:
         return
 

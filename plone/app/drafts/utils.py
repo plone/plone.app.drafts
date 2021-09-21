@@ -58,13 +58,11 @@ def getCurrentDraft(request, create=False):
 
 
 def getCurrentUserId():
-    """Get the current user id. Returns None if the user is Anonymous.
-    """
+    """Get the current user id. Returns None if the user is Anonymous."""
 
     return getSecurityManager().getUser().getId()
 
 
 def getDefaultKey(context):
-    """Get the default (string) key for the given context, based on uuids
-    """
+    """Get the default (string) key for the given context, based on uuids"""
     return IUUID(context, None)
