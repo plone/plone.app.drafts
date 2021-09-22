@@ -4,7 +4,7 @@ Changelog
 2.0.0 (unreleased)
 ------------------
 
-- remove Archetypes. This version targets Plone 5.2+ only.
+- remove Archetypes. This version targets Plone 5.2+ with Python 3.6+ only.
 - Fix class security warnings
   [petschki]
 
