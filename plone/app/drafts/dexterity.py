@@ -36,21 +36,24 @@ import transaction
 
 try:
     from plone.protect.interfaces import IDisableCSRFProtection
+
     HAS_PLONE_PROTECT = True
 except ImportError:
     HAS_PLONE_PROTECT = False
 
 
 AUTOSAVE_BLACKLIST = [
-    'IShortName.id',
+    "IShortName.id",
 ]
 
 
 def isDraftable(fti):
-    return any([
-        IDraftable.__identifier__ in fti.behaviors,
-        'plone.draftable' in fti.behaviors,
-    ])
+    return any(
+        [
+            IDraftable.__identifier__ in fti.behaviors,
+            "plone.draftable" in fti.behaviors,
+        ]
+    )
 
 
 class IDisplayFormDrafting(IFormLayer):
@@ -68,21 +71,20 @@ class IEditFormDrafting(IFormLayer):
 @adapter(DefaultAddForm, IFormLayer, Interface)
 @implementer(IWidgets)
 class DefaultAddFormFieldWidgets(FieldWidgetsBase):
-
     def __init__(self, form, request, context):
         fti = queryUtility(IDexterityFTI, name=form.portal_type)
         if isDraftable(fti):
             current = ICurrentDraftManagement(request)
 
-            if current.targetKey != '++add++{0}'.format(form.portal_type):
+            if current.targetKey != "++add++{0}".format(form.portal_type):
                 beginDrafting(context, None)
-                current.path = '/'.join(context.getPhysicalPath())
-                current.targetKey = '++add++{0}'.format(form.portal_type)
+                current.path = "/".join(context.getPhysicalPath())
+                current.targetKey = "++add++{0}".format(form.portal_type)
                 current.save()
             else:
                 current.mark()
 
-            target = getattr(current.draft, '_draftAddFormTarget', None)
+            target = getattr(current.draft, "_draftAddFormTarget", None)
             if current.draft and target:
                 context = DraftProxy(current.draft, target.__of__(context))
                 alsoProvides(request, IAddFormDrafting)
@@ -98,12 +100,13 @@ class DefaultAddFormFieldWidgets(FieldWidgetsBase):
 @adapter(IGroup, IAddFormDrafting, Interface)
 @implementer(IWidgets)
 class DefaultAddFormGroupFieldWidgets(FieldWidgetsBase):
-
     def __init__(self, form, request, context):
         draft = getCurrentDraft(request)
-        target = getattr(draft, '_draftAddFormTarget')
+        target = getattr(draft, "_draftAddFormTarget")
         context = DraftProxy(draft, target.__of__(context))
-        super(DefaultAddFormGroupFieldWidgets, self).__init__(form, request, context)  # noqa
+        super(DefaultAddFormGroupFieldWidgets, self).__init__(
+            form, request, context
+        )  # noqa
 
     def update(self):
         self.ignoreContext = False
@@ -113,7 +116,6 @@ class DefaultAddFormGroupFieldWidgets(FieldWidgetsBase):
 @adapter(DefaultEditForm, IFormLayer, IDexterityContent)
 @implementer(IWidgets)
 class DefaultEditFormFieldWidgets(FieldWidgetsBase):
-
     def __init__(self, form, request, context):
         fti = queryUtility(IDexterityFTI, name=form.portal_type)
         if isDraftable(fti):
@@ -121,7 +123,7 @@ class DefaultEditFormFieldWidgets(FieldWidgetsBase):
 
             if current.targetKey is None:
                 beginDrafting(context, None)
-                current.path = '/'.join(context.getPhysicalPath())
+                current.path = "/".join(context.getPhysicalPath())
                 current.targetKey = IUUID(context)
                 current.save()
             else:
@@ -131,23 +133,25 @@ class DefaultEditFormFieldWidgets(FieldWidgetsBase):
                 context = DraftProxy(current.draft, context)
                 alsoProvides(request, IEditFormDrafting)
 
-        super(DefaultEditFormFieldWidgets, self).__init__(form, request, context)  # noqa
+        super(DefaultEditFormFieldWidgets, self).__init__(
+            form, request, context
+        )  # noqa
 
 
 @adapter(IGroup, IEditFormDrafting, Interface)
 @implementer(IWidgets)
 class DefaultEditFormGroupFieldWidgets(FieldWidgetsBase):
-
     def __init__(self, form, request, context):
         draft = getCurrentDraft(request)
         context = DraftProxy(draft, context)
-        super(DefaultEditFormGroupFieldWidgets, self).__init__(form, request, context)  # noqa
+        super(DefaultEditFormGroupFieldWidgets, self).__init__(
+            form, request, context
+        )  # noqa
 
 
 @adapter(WidgetsView, IDisplayFormDrafting, IDexterityContent)
 @implementer(IWidgets)
 class DefaultDisplayFormFieldWidgets(FieldWidgetsBase):
-
     def __init__(self, form, request, context):
         fti = queryUtility(IDexterityFTI, name=context.portal_type)
         if isDraftable(fti):
@@ -159,28 +163,31 @@ class DefaultDisplayFormFieldWidgets(FieldWidgetsBase):
             if current.draft:
                 context = DraftProxy(current.draft, context)
 
-        super(DefaultDisplayFormFieldWidgets, self).__init__(form, request, context)  # noqa
+        super(DefaultDisplayFormFieldWidgets, self).__init__(
+            form, request, context
+        )  # noqa
 
 
 @adapter(IGroup, IDisplayFormDrafting, Interface)
 @implementer(IWidgets)
 class DefaultDisplayFormGroupFieldWidgets(FieldWidgetsBase):
-
     def __init__(self, form, request, context):
         draft = getCurrentDraft(request)
         context = DraftProxy(draft, context)
-        super(DefaultDisplayFormGroupFieldWidgets, self).__init__(form, request, context)  # noqa
+        super(DefaultDisplayFormGroupFieldWidgets, self).__init__(
+            form, request, context
+        )  # noqa
 
 
 def autosave(event):  # noqa
-    context = getattr(event, 'object', None)
-    request = getattr(context, 'REQUEST', getRequest())
-    if not request.URL.endswith('/@@z3cform_validate_field'):
+    context = getattr(event, "object", None)
+    request = getattr(context, "REQUEST", getRequest())
+    if not request.URL.endswith("/@@z3cform_validate_field"):
         return
 
-    view = getattr(request, 'PUBLISHED', None)
-    form = getattr(view, 'context', None)
-    if getattr(aq_base(form), 'form_instance', None):
+    view = getattr(request, "PUBLISHED", None)
+    form = getattr(view, "context", None)
+    if getattr(aq_base(form), "form_instance", None):
         form = form.form_instance
 
     if IAddForm.providedBy(form):
@@ -189,12 +196,12 @@ def autosave(event):  # noqa
             return
 
         draft = getCurrentDraft(request, create=True)
-        target = getattr(draft, '_draftAddFormTarget', None)
+        target = getattr(draft, "_draftAddFormTarget", None)
 
         if target is None:
             target = createContent(form.portal_type)
-            target.id = ''
-            IMutableUUID(target).set('++add++{0}'.format(form.portal_type))
+            target.id = ""
+            IMutableUUID(target).set("++add++{0}".format(form.portal_type))
             draft._draftAddFormTarget = target
         target = target.__of__(context)
 
@@ -210,7 +217,7 @@ def autosave(event):  # noqa
     if not isDraftable(fti):
         return
 
-    if not getattr(form, 'extractData', None):
+    if not getattr(form, "extractData", None):
         return
 
     data, errors = form.extractData()
@@ -218,14 +225,16 @@ def autosave(event):  # noqa
         content = DraftProxy(draft, target)
 
         # Drop known non-draftable values
-        data = dict([(k, v) for k, v in data.items() if k not in AUTOSAVE_BLACKLIST])  # noqa
+        data = dict(
+            [(k, v) for k, v in data.items() if k not in AUTOSAVE_BLACKLIST]
+        )  # noqa
 
         # Values are applied within savepoint to allow revert of any
         # unexpected side-effects from setting field values
         sp = transaction.savepoint(optimistic=True)
         try:
             applyChanges(form, content, data)
-            for group in getattr(form, 'groups', []):
+            for group in getattr(form, "groups", []):
                 applyChanges(group, content, data)
         except Exception:
             # If shortname was not blacklisted, it could fail because the
@@ -244,12 +253,12 @@ def autosave(event):  # noqa
 
 @adapter(IDexterityContent, IObjectAddedEvent)
 def capture(ob, event):
-    request = getattr(ob, 'REQUEST', getRequest())
+    request = getattr(ob, "REQUEST", getRequest())
     if not IAddFormDrafting.providedBy(request):
         return
 
     draft = getCurrentDraft(request)
-    target = getattr(draft, '_draftAddFormTarget', None)
+    target = getattr(draft, "_draftAddFormTarget", None)
     if draft and target and target.portal_type == target.portal_type:
         draft._draftAddFormTarget = ob
 
@@ -259,7 +268,7 @@ def cancel(event):
     if not IDrafting.providedBy(event.action.request):
         return
 
-    if event.action.name != 'form.buttons.cancel':
+    if event.action.name != "form.buttons.cancel":
         return
 
     discardDraftsOnCancel(event.action.form.context, event)
@@ -270,7 +279,7 @@ def save(event):
     if not IDrafting.providedBy(event.action.request):
         return
 
-    if event.action.name != 'form.buttons.save':
+    if event.action.name != "form.buttons.save":
         return
 
     data, errors = event.action.form.extractData()
@@ -279,7 +288,7 @@ def save(event):
 
     if IAddForm.providedBy(event.action.form):
         draft = getCurrentDraft(event.action.form.request)
-        target = getattr(draft, '_draftAddFormTarget', None)
+        target = getattr(draft, "_draftAddFormTarget", None)
         if target:
             target = target.__of__(event.action.form.context)
             syncDraftOnSave(target, event)
