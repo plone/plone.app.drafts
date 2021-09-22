@@ -34,3 +34,4 @@ node_modules
 !.isort.cfg
 pip-selfcheck.json
 src/*
+.python-version

@@ -1,11 +1,9 @@
 # -*- coding: utf-8 -*-
 from AccessControl import getSecurityManager
-from Acquisition import aq_parent
 from plone.app.drafts.interfaces import ICurrentDraftManagement
 from plone.app.drafts.interfaces import IDraftStorage
 from plone.app.drafts.interfaces import IDraftSyncer
 from plone.uuid.interfaces import IUUID
-from Products.CMFCore.utils import getToolByName
 from zope.component import getAdapters
 from zope.component import queryUtility
 
