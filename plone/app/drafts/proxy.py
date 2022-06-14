@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from Acquisition import aq_base
-from collections import MutableMapping
+from collections.abc import MutableMapping
 from plone.app.drafts.interfaces import IDraftProxy
 from zope.annotation.interfaces import IAnnotations
 from zope.component import adapter
