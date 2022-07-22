@@ -1,7 +1,7 @@
 Changelog
 =========
 
-2.0.0 (unreleased)
+2.0.0 (2022-07-22)
 ------------------
 
 - remove Archetypes. This version targets Plone 5.2+ with Python 3.6+ only.
