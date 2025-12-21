@@ -7,3 +7,4 @@ global-exclude *pyc
 
 exclude bootstrap.py
 exclude *.cfg .coveragerc .github *.ini
+recursive-exclude news *
