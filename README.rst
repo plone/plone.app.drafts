@@ -1,14 +1,6 @@
 Introduction
 ============
 
-.. image:: https://secure.travis-ci.org/plone/plone.app.drafts.png?branch=master
-    :alt: Travis CI badge
-    :target: http://travis-ci.org/plone/plone.app.drafts
-
-.. image:: https://coveralls.io/repos/plone/plone.app.drafts/badge.png?branch=master
-    :alt: Coveralls badge
-    :target: https://coveralls.io/r/plone/plone.app.drafts
-
 plone.app.drafts implements services for managing auto-saved content drafts in Plone.
 This addresses two problems:
 
