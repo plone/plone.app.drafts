@@ -1,6 +1,7 @@
 <configure
     xmlns="http://namespaces.zope.org/zope"
-    i18n_domain="plone.app.drafts">
+    i18n_domain="plone.app.drafts"
+    >
 
   <adapter factory=".dexterity.DefaultAddFormFieldWidgets" />
   <adapter factory=".dexterity.DefaultAddFormGroupFieldWidgets" />
