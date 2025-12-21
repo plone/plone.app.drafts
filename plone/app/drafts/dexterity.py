@@ -103,9 +103,7 @@ class DefaultAddFormGroupFieldWidgets(FieldWidgetsBase):
         draft = getCurrentDraft(request)
         target = getattr(draft, "_draftAddFormTarget")
         context = DraftProxy(draft, target.__of__(context))
-        super().__init__(
-            form, request, context
-        )  # noqa
+        super().__init__(form, request, context)  # noqa
 
     def update(self):
         self.ignoreContext = False
@@ -132,9 +130,7 @@ class DefaultEditFormFieldWidgets(FieldWidgetsBase):
                 context = DraftProxy(current.draft, context)
                 alsoProvides(request, IEditFormDrafting)
 
-        super().__init__(
-            form, request, context
-        )  # noqa
+        super().__init__(form, request, context)  # noqa
 
 
 @adapter(IGroup, IEditFormDrafting, Interface)
@@ -143,9 +139,7 @@ class DefaultEditFormGroupFieldWidgets(FieldWidgetsBase):
     def __init__(self, form, request, context):
         draft = getCurrentDraft(request)
         context = DraftProxy(draft, context)
-        super().__init__(
-            form, request, context
-        )  # noqa
+        super().__init__(form, request, context)  # noqa
 
 
 @adapter(WidgetsView, IDisplayFormDrafting, IDexterityContent)
@@ -162,9 +156,7 @@ class DefaultDisplayFormFieldWidgets(FieldWidgetsBase):
             if current.draft:
                 context = DraftProxy(current.draft, context)
 
-        super().__init__(
-            form, request, context
-        )  # noqa
+        super().__init__(form, request, context)  # noqa
 
 
 @adapter(IGroup, IDisplayFormDrafting, Interface)
@@ -173,9 +165,7 @@ class DefaultDisplayFormGroupFieldWidgets(FieldWidgetsBase):
     def __init__(self, form, request, context):
         draft = getCurrentDraft(request)
         context = DraftProxy(draft, context)
-        super().__init__(
-            form, request, context
-        )  # noqa
+        super().__init__(form, request, context)  # noqa
 
 
 def autosave(event):  # noqa
@@ -224,9 +214,7 @@ def autosave(event):  # noqa
         content = DraftProxy(draft, target)
 
         # Drop known non-draftable values
-        data = {
-            k: v for k, v in data.items() if k not in AUTOSAVE_BLACKLIST
-        }  # noqa
+        data = {k: v for k, v in data.items() if k not in AUTOSAVE_BLACKLIST}  # noqa
 
         # Values are applied within savepoint to allow revert of any
         # unexpected side-effects from setting field values

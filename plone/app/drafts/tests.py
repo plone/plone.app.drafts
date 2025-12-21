@@ -853,9 +853,7 @@ class TestDexterityIntegration(unittest.TestCase):
         # We can now fill in the required fields and save. The cookies should
         # expire.
 
-        browser.getControl(
-            name="form.widgets.IDublinCore.title"
-        ).value = "New Document"
+        browser.getControl(name="form.widgets.IDublinCore.title").value = "New Document"
         browser.getControl(name="form.buttons.save").click()
         self.assertNotIn(
             "plone.app.drafts.targetKey",
