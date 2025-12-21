@@ -25,7 +25,7 @@ Changelog
 1.1.2 (2017-07-03)
 ------------------
 
-- Fix issue where draft sync failed because draft might have been withotu aq wrapper
+- Fix issue where draft sync failed because draft might have been without aq wrapper
   [datakurre]
 
 1.1.1 (2016-09-09)

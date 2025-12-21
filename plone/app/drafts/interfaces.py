@@ -69,7 +69,7 @@ class IDraftStorage(Interface):
         """Discard a particular draft."""
 
     def getDrafts(userId, targetKey):
-        """Get a list mappping of all drafts under the given userId and
+        """Get a list mapping of all drafts under the given userId and
         target key. The returned mapping should not be modified directly.
         """
 
@@ -127,11 +127,11 @@ class ICurrentDraftManagement(Interface):
     The current draft information may be persisted across requests by calling
     ``save()``. Once saved, it can be later discard by calling ``save()``.
 
-    The deafult implementation stores information in cookies that are set
+    The default implementation stores information in cookies that are set
     when the form is entered and cleared when it is saved or cancelled. The
-    cookes are set for a path corresponding to the content object. This allows
+    cookies are set for a path corresponding to the content object. This allows
     things like AJAX requests in the visual editor to find the same draft
-    information, and minimises the risk of a draft for one object being used
+    information, and minimizes the risk of a draft for one object being used
     for another.
 
     The default path may be obtained via the ``defaultPath`` property, but
