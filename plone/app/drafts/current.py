@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from plone.app.drafts.interfaces import DRAFT_KEY
 from plone.app.drafts.interfaces import DRAFT_NAME_KEY
 from plone.app.drafts.interfaces import ICurrentDraftManagement
@@ -18,7 +17,7 @@ from zope.publisher.interfaces import IRequest
 
 @adapter(IRequest)
 @implementer(ICurrentDraftManagement)
-class DefaultCurrentDraftManagement(object):
+class DefaultCurrentDraftManagement:
     def __init__(self, request):
         self.request = request
         self.annotations = IAnnotations(request)

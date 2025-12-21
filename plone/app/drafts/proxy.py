@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from Acquisition import aq_base
 from collections.abc import MutableMapping
 from plone.app.drafts.interfaces import IDraftProxy
@@ -56,7 +55,7 @@ class ProxySpecification(ObjectSpecificationDescriptor):
 
 
 @implementer(IDraftProxy)
-class DraftProxy(object):
+class DraftProxy:
     """A simple proxy object that is initialised with a draft object and the
     underlying target. All attribute and annotation writes are performed
     against the draft; all reads are performed against the draft unless the
@@ -145,8 +144,7 @@ class AliasAnnotations(MutableMapping):
 
     def __iter__(self):
         # adhere to MutableMapping interface
-        for val in self.draftAnnotations.values():
-            yield val
+        yield from self.draftAnnotations.values()
 
     def __len__(self):
         # adhere to MutableMapping interface

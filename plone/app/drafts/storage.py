@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from BTrees.OOBTree import OOBTree
 from OFS.SimpleItem import SimpleItem
 from plone.app.drafts.draft import Draft
@@ -41,19 +40,19 @@ class Storage(SimpleItem):
         draft = factory(userId, targetKey)
 
         if not draft.__name__:
-            draft.__name__ = u"draft"
+            draft.__name__ = "draft"
 
         if draft.__name__ in container:
             idx = len(container)
             while (
-                u"{0}-{1}".format(
+                "{}-{}".format(
                     draft.__name__,
                     idx,
                 )
                 in container
             ):
                 idx += 1
-            draft.__name__ = u"{0}-{1}".format(
+            draft.__name__ = "{}-{}".format(
                 draft.__name__,
                 idx,
             )

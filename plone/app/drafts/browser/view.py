@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from datetime import datetime
 from plone.app.uuid.utils import uuidToObject
 
@@ -9,7 +8,7 @@ except ImportError:
     from urllib.parse import quote
 
 
-class View(object):
+class View:
     """A shared view class that is used for each of the three views. They
     each use a different template.
     """

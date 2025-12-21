@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from pkg_resources import parse_version
 from plone.app.drafts.draft import Draft
 from plone.app.drafts.interfaces import DRAFT_NAME_KEY
@@ -78,14 +77,14 @@ class TestStorage(unittest.TestCase):
 
     def test_createDraft_factory(self):
         def factory(userId, targetKey):
-            return Draft(name=u"foo")
+            return Draft(name="foo")
 
         draft1 = self.storage.createDraft("user1", "123", factory=factory)
-        self.assertEqual(u"foo", draft1.__name__)
+        self.assertEqual("foo", draft1.__name__)
         self.assertTrue(draft1.__name__ in self.storage.drafts["user1"]["123"])
 
         draft2 = self.storage.createDraft("user1", "123", factory=factory)
-        self.assertEqual(u"foo-1", draft2.__name__)
+        self.assertEqual("foo-1", draft2.__name__)
         self.assertTrue(draft2.__name__ in self.storage.drafts["user1"]["123"])
 
     def test_discardDrafts(self):
@@ -145,17 +144,17 @@ class TestStorage(unittest.TestCase):
 
     def test_discardDraft_not_found(self):
         self.storage.createDraft("user1", "123")
-        draft = Draft("user1", "123", u"bogus")
+        draft = Draft("user1", "123", "bogus")
         self.storage.discardDraft(draft)
 
     def test_discardDraft_no_key(self):
         self.storage.createDraft("user1", "123")
-        draft = Draft("user1", "234", u"draft")
+        draft = Draft("user1", "234", "draft")
         self.storage.discardDraft(draft)
 
     def test_discardDraft_no_user(self):
         self.storage.createDraft("user1", "123")
-        draft = Draft("user2", "123", u"draft")
+        draft = Draft("user2", "123", "draft")
         self.storage.discardDraft(draft)
 
     def test_getDrafts(self):
@@ -182,7 +181,7 @@ class TestStorage(unittest.TestCase):
 
     def test_getDraft_not_found(self):
         self.storage.createDraft("user1", "123")
-        self.assertEqual(None, self.storage.getDraft("user1", "123", u"bogus"))
+        self.assertEqual(None, self.storage.getDraft("user1", "123", "bogus"))
 
     def test_getDraft_no_key(self):
         draft = self.storage.createDraft("user1", "123")
@@ -211,32 +210,32 @@ class TestDraftProxy(unittest.TestCase):
         self.folder.invokeFactory("Document", "d1")
         target = self.folder["d1"]
 
-        target.title = u"Old title"
+        target.title = "Old title"
 
         draft = Draft()
         draft.someAttribute = 1
 
         proxy = DraftProxy(draft, target)
 
-        self.assertEqual(u"Old title", proxy.title)
+        self.assertEqual("Old title", proxy.title)
         self.assertEqual(1, proxy.someAttribute)
 
-        proxy.title = u"New title"
+        proxy.title = "New title"
 
-        self.assertEqual(u"New title", proxy.title)
+        self.assertEqual("New title", proxy.title)
 
     def test_attribute_deletion(self):
 
         self.folder.invokeFactory("Document", "d1")
         target = self.folder["d1"]
 
-        target.title = u"Old title"
-        target.description = u"Old description"
+        target.title = "Old title"
+        target.description = "Old description"
 
         draft = Draft()
 
         draft.someAttribute = 1
-        draft.description = u"New description"
+        draft.description = "New description"
 
         proxy = DraftProxy(draft, target)
 
@@ -245,7 +244,7 @@ class TestDraftProxy(unittest.TestCase):
         del proxy.description
 
         self.assertEqual(
-            set(["someAttribute", "title", "description"]),
+            {"someAttribute", "title", "description"},
             draft._proxyDeleted,
         )
 
@@ -257,8 +256,8 @@ class TestDraftProxy(unittest.TestCase):
         self.assertFalse(hasattr(proxy, "title"))
         self.assertFalse(hasattr(proxy, "description"))
 
-        self.assertEqual(u"Old title", target.title)
-        self.assertEqual(u"Old description", target.description)
+        self.assertEqual("Old title", target.title)
+        self.assertEqual("Old description", target.description)
 
     def test_interfaces(self):
 
@@ -281,58 +280,58 @@ class TestDraftProxy(unittest.TestCase):
         target = self.folder["d1"]
 
         targetAnnotations = IAnnotations(target)
-        targetAnnotations[u"test.key"] = 123
-        targetAnnotations[u"other.key"] = 456
+        targetAnnotations["test.key"] = 123
+        targetAnnotations["other.key"] = 456
 
         draft = Draft()
 
         draftAnnotations = IAnnotations(draft)
-        draftAnnotations[u"some.key"] = 234
+        draftAnnotations["some.key"] = 234
 
         proxy = DraftProxy(draft, target)
 
         proxyAnnotations = IAnnotations(proxy)
 
-        self.assertEqual(123, proxyAnnotations[u"test.key"])
-        self.assertEqual(234, proxyAnnotations[u"some.key"])
+        self.assertEqual(123, proxyAnnotations["test.key"])
+        self.assertEqual(234, proxyAnnotations["some.key"])
 
-        proxyAnnotations[u"test.key"] = 789
+        proxyAnnotations["test.key"] = 789
 
-        self.assertEqual(789, proxyAnnotations[u"test.key"])
-        self.assertEqual(123, targetAnnotations[u"test.key"])
+        self.assertEqual(789, proxyAnnotations["test.key"])
+        self.assertEqual(123, targetAnnotations["test.key"])
 
         # Annotations API
 
-        self.assertEqual(789, proxyAnnotations.get(u"test.key"))
+        self.assertEqual(789, proxyAnnotations.get("test.key"))
 
         keys = proxyAnnotations.keys()
-        self.assertTrue(u"test.key" in keys)
-        self.assertTrue(u"some.key" in keys)
-        self.assertTrue(u"other.key" in keys)
+        self.assertTrue("test.key" in keys)
+        self.assertTrue("some.key" in keys)
+        self.assertTrue("other.key" in keys)
 
-        self.assertEqual(789, proxyAnnotations.setdefault(u"test.key", -1))
-        self.assertEqual(234, proxyAnnotations.setdefault(u"some.key", -1))
-        self.assertEqual(456, proxyAnnotations.setdefault(u"other.key", -1))
-        self.assertEqual(-1, proxyAnnotations.setdefault(u"new.key", -1))
+        self.assertEqual(789, proxyAnnotations.setdefault("test.key", -1))
+        self.assertEqual(234, proxyAnnotations.setdefault("some.key", -1))
+        self.assertEqual(456, proxyAnnotations.setdefault("other.key", -1))
+        self.assertEqual(-1, proxyAnnotations.setdefault("new.key", -1))
 
-        del proxyAnnotations[u"test.key"]
-        self.assertFalse(u"test.key" in proxyAnnotations)
-        self.assertFalse(u"test.key" in draftAnnotations)
-        self.assertTrue(u"test.key" in targetAnnotations)
-        self.assertTrue(u"test.key" in draft._proxyAnnotationsDeleted)
+        del proxyAnnotations["test.key"]
+        self.assertFalse("test.key" in proxyAnnotations)
+        self.assertFalse("test.key" in draftAnnotations)
+        self.assertTrue("test.key" in targetAnnotations)
+        self.assertTrue("test.key" in draft._proxyAnnotationsDeleted)
 
-        del proxyAnnotations[u"some.key"]
-        self.assertFalse(u"some.key" in proxyAnnotations)
-        self.assertFalse(u"some.key" in draftAnnotations)
-        self.assertFalse(u"some.key" in targetAnnotations)
-        self.assertTrue(u"some.key" in draft._proxyAnnotationsDeleted)
+        del proxyAnnotations["some.key"]
+        self.assertFalse("some.key" in proxyAnnotations)
+        self.assertFalse("some.key" in draftAnnotations)
+        self.assertFalse("some.key" in targetAnnotations)
+        self.assertTrue("some.key" in draft._proxyAnnotationsDeleted)
 
         # this key was never in the proxy/draft
-        del proxyAnnotations[u"other.key"]
-        self.assertFalse(u"other.key" in proxyAnnotations)
-        self.assertFalse(u"other.key" in draftAnnotations)
-        self.assertTrue(u"other.key" in targetAnnotations)
-        self.assertTrue(u"other.key" in draft._proxyAnnotationsDeleted)
+        del proxyAnnotations["other.key"]
+        self.assertFalse("other.key" in proxyAnnotations)
+        self.assertFalse("other.key" in draftAnnotations)
+        self.assertTrue("other.key" in targetAnnotations)
+        self.assertTrue("other.key" in draft._proxyAnnotationsDeleted)
 
 
 class TestDraftSyncer(unittest.TestCase):
@@ -340,7 +339,7 @@ class TestDraftSyncer(unittest.TestCase):
     layer = DRAFTS_INTEGRATION_TESTING
 
     def test_syncDraft(self):
-        class Target(object):
+        class Target:
             pass
 
         draft = Draft()
@@ -351,7 +350,7 @@ class TestDraftSyncer(unittest.TestCase):
 
         @adapter(Draft, Target)
         @implementer(IDraftSyncer)
-        class Syncer1(object):
+        class Syncer1:
             def __init__(self, draft, target):
                 self.draft = draft
                 self.target = target
@@ -359,11 +358,11 @@ class TestDraftSyncer(unittest.TestCase):
             def __call__(self):
                 self.target.a1 = self.draft.a1
 
-        provideAdapter(Syncer1, name=u"s1")
+        provideAdapter(Syncer1, name="s1")
 
         @adapter(Draft, Target)
         @implementer(IDraftSyncer)
-        class Syncer2(object):
+        class Syncer2:
             def __init__(self, draft, target):
                 self.draft = draft
                 self.target = target
@@ -371,7 +370,7 @@ class TestDraftSyncer(unittest.TestCase):
             def __call__(self):
                 self.target.a2 = self.draft.a2
 
-        provideAdapter(Syncer2, name=u"s2")
+        provideAdapter(Syncer2, name="s2")
 
         syncDraft(draft, target)
 
@@ -392,8 +391,8 @@ class TestCurrentDraft(unittest.TestCase):
         current = ICurrentDraftManagement(request)
         self.assertEqual(TEST_USER_ID, current.userId)
 
-        current.userId = u"third-user"
-        self.assertEqual(u"third-user", current.userId)
+        current.userId = "third-user"
+        self.assertEqual("third-user", current.userId)
 
     def test_targetKey(self):
         request = self.request
@@ -401,13 +400,13 @@ class TestCurrentDraft(unittest.TestCase):
         current = ICurrentDraftManagement(request)
         self.assertEqual(None, current.targetKey)
 
-        request.set("plone.app.drafts.targetKey", u"123")
-        self.assertEqual(u"123", current.targetKey)
+        request.set("plone.app.drafts.targetKey", "123")
+        self.assertEqual("123", current.targetKey)
 
-        current.targetKey = u"234"
-        self.assertEqual(u"234", current.targetKey)
+        current.targetKey = "234"
+        self.assertEqual("234", current.targetKey)
 
-        self.assertEqual(u"123", request.get("plone.app.drafts.targetKey"))
+        self.assertEqual("123", request.get("plone.app.drafts.targetKey"))
 
     def test_draftName(self):
         request = self.request
@@ -415,13 +414,13 @@ class TestCurrentDraft(unittest.TestCase):
         current = ICurrentDraftManagement(request)
         self.assertEqual(None, current.draftName)
 
-        request.set("plone.app.drafts.draftName", u"draft-1")
-        self.assertEqual(u"draft-1", current.draftName)
+        request.set("plone.app.drafts.draftName", "draft-1")
+        self.assertEqual("draft-1", current.draftName)
 
-        current.draftName = u"draft-2"
-        self.assertEqual(u"draft-2", current.draftName)
+        current.draftName = "draft-2"
+        self.assertEqual("draft-2", current.draftName)
 
-        self.assertEqual(u"draft-1", request.get("plone.app.drafts.draftName"))
+        self.assertEqual("draft-1", request.get("plone.app.drafts.draftName"))
 
     def test_path(self):
         request = self.request
@@ -429,13 +428,13 @@ class TestCurrentDraft(unittest.TestCase):
         current = ICurrentDraftManagement(request)
         self.assertEqual(None, current.path)
 
-        request.set("plone.app.drafts.path", u"/test")
-        self.assertEqual(u"/test", current.path)
+        request.set("plone.app.drafts.path", "/test")
+        self.assertEqual("/test", current.path)
 
-        current.path = u"/test/test-1"
-        self.assertEqual(u"/test/test-1", current.path)
+        current.path = "/test/test-1"
+        self.assertEqual("/test/test-1", current.path)
 
-        self.assertEqual(u"/test", request.get("plone.app.drafts.path"))
+        self.assertEqual("/test", request.get("plone.app.drafts.path"))
 
     def test_draft(self):
         request = self.request
@@ -443,19 +442,19 @@ class TestCurrentDraft(unittest.TestCase):
         current = ICurrentDraftManagement(request)
         self.assertEqual(None, current.draft)
 
-        current.userId = u"user1"
-        current.targetKey = u"123"
-        current.draftName = u"draft"
+        current.userId = "user1"
+        current.targetKey = "123"
+        current.draftName = "draft"
 
         self.assertEqual(None, current.draft)
 
         storage = getUtility(IDraftStorage)
-        created = storage.createDraft(u"user1", u"123")
+        created = storage.createDraft("user1", "123")
         current.draftName = created.__name__
 
         self.assertEqual(created, current.draft)
 
-        newDraft = storage.createDraft(u"user1", u"123")
+        newDraft = storage.createDraft("user1", "123")
         current.draft = newDraft
 
         self.assertEqual(newDraft, current.draft)
@@ -484,7 +483,7 @@ class TestCurrentDraft(unittest.TestCase):
         current.mark()
         self.assertFalse(IDrafting.providedBy(request))
 
-        current.targetKey = u"123"
+        current.targetKey = "123"
         current.mark()
         self.assertTrue(IDrafting.providedBy(request))
 
@@ -500,7 +499,7 @@ class TestCurrentDraft(unittest.TestCase):
         self.assertFalse("plone.app.drafts.userId" in response.cookies)
         self.assertFalse("plone.app.drafts.path" in response.cookies)
 
-        current.targetKey = u"123"
+        current.targetKey = "123"
         self.assertEqual(True, current.save())
 
         self.assertEqual(
@@ -510,8 +509,8 @@ class TestCurrentDraft(unittest.TestCase):
         self.assertFalse("plone.app.drafts.draftName" in response.cookies)
         self.assertFalse("plone.app.drafts.path" in response.cookies)
 
-        current.targetKey = u"123"
-        current.draftName = u"draft-1"
+        current.targetKey = "123"
+        current.draftName = "draft-1"
         self.assertEqual(True, current.save())
 
         self.assertEqual(
@@ -524,8 +523,8 @@ class TestCurrentDraft(unittest.TestCase):
         )
         self.assertFalse("plone.app.drafts.path" in response.cookies)
 
-        current.targetKey = u"123"
-        current.draftName = u"draft-1"
+        current.targetKey = "123"
+        current.draftName = "draft-1"
         current.path = "/test"
 
         # clear data
@@ -678,9 +677,9 @@ class TestUtils(unittest.TestCase):
         request = self.request
 
         management = ICurrentDraftManagement(request)
-        management.userId = u"user1"
-        management.targetKey = u"123"
-        management.draftName = u"bogus"
+        management.userId = "user1"
+        management.targetKey = "123"
+        management.draftName = "bogus"
 
         draft = getCurrentDraft(request)
         self.assertEqual(None, draft)
@@ -693,12 +692,12 @@ class TestUtils(unittest.TestCase):
         request = self.request
 
         management = ICurrentDraftManagement(request)
-        management.userId = u"user1"
-        management.targetKey = u"123"
-        management.draftName = u"bogus"
+        management.userId = "user1"
+        management.targetKey = "123"
+        management.draftName = "bogus"
 
         draft = getCurrentDraft(request, create=True)
-        inStorage = getUtility(IDraftStorage).getDraft(u"user1", u"123", draft.__name__)
+        inStorage = getUtility(IDraftStorage).getDraft("user1", "123", draft.__name__)
 
         self.assertEqual(inStorage, draft)
 
@@ -718,11 +717,11 @@ class TestUtils(unittest.TestCase):
     def test_getCurrentDraft_draft_details_set_in_storage(self):
         request = self.request
 
-        inStorage = getUtility(IDraftStorage).createDraft(u"user1", u"123")
+        inStorage = getUtility(IDraftStorage).createDraft("user1", "123")
 
         management = ICurrentDraftManagement(request)
-        management.userId = u"user1"
-        management.targetKey = u"123"
+        management.userId = "user1"
+        management.targetKey = "123"
         management.draftName = inStorage.__name__
 
         draft = getCurrentDraft(request)
@@ -735,11 +734,11 @@ class TestUtils(unittest.TestCase):
     def test_getCurrentDraft_draft_details_set_in_storage_create(self):
         request = self.request
 
-        inStorage = getUtility(IDraftStorage).createDraft(u"user1", u"123")
+        inStorage = getUtility(IDraftStorage).createDraft("user1", "123")
 
         management = ICurrentDraftManagement(request)
-        management.userId = u"user1"
-        management.targetKey = u"123"
+        management.userId = "user1"
+        management.targetKey = "123"
         management.draftName = inStorage.__name__
 
         draft = getCurrentDraft(request, create=True)
@@ -790,7 +789,7 @@ class TestDexterityIntegration(unittest.TestCase):
         cookies = browser.cookies.forURL(browser.url)
         self.assertEqual('"/plone"', cookies["plone.app.drafts.path"])
         self.assertEqual(
-            '"{0}"'.format(self.get_portal_target_key()),
+            f'"{self.get_portal_target_key()}"',
             cookies["plone.app.drafts.targetKey"],
         )
         self.assertNotIn(
@@ -830,7 +829,7 @@ class TestDexterityIntegration(unittest.TestCase):
         cookies = browser.cookies.forURL(browser.url)
         self.assertEqual('"/plone"', cookies["plone.app.drafts.path"])
         self.assertEqual(
-            '"{0}"'.format(self.get_portal_target_key()),
+            f'"{self.get_portal_target_key()}"',
             cookies["plone.app.drafts.targetKey"],
         )
         self.assertNotIn(
@@ -847,7 +846,7 @@ class TestDexterityIntegration(unittest.TestCase):
 
         browser.cookies.create(
             DRAFT_NAME_KEY,
-            u"draft",
+            "draft",
             path="/plone",
         )
 
@@ -856,7 +855,7 @@ class TestDexterityIntegration(unittest.TestCase):
 
         browser.getControl(
             name="form.widgets.IDublinCore.title"
-        ).value = u"New Document"
+        ).value = "New Document"
         browser.getControl(name="form.buttons.save").click()
         self.assertNotIn(
             "plone.app.drafts.targetKey",
@@ -887,11 +886,11 @@ class TestDexterityIntegration(unittest.TestCase):
         # We should now have cookies with the drafts information
         cookies = browser.cookies.forURL(browser.url)
         self.assertEqual(
-            '"{0}"'.format(self.folder.absolute_url_path()),
+            f'"{self.folder.absolute_url_path()}"',
             cookies["plone.app.drafts.path"],
         )
         self.assertEqual(
-            '"{0}"'.format(IUUID(self.folder)),
+            f'"{IUUID(self.folder)}"',
             cookies["plone.app.drafts.targetKey"],
         )
         self.assertNotIn(
@@ -915,7 +914,7 @@ class TestDexterityIntegration(unittest.TestCase):
         browser.handleErrors = False
 
         self.folder.invokeFactory("MyDocument", "d1")
-        self.folder["d1"].title = u"New title"
+        self.folder["d1"].title = "New title"
 
         transaction.commit()
 
@@ -933,11 +932,11 @@ class TestDexterityIntegration(unittest.TestCase):
         # We should now have cookies with the drafts information
         cookies = browser.cookies.forURL(browser.url)
         self.assertEqual(
-            '"{0}"'.format(self.folder["d1"].absolute_url_path()),
+            '"{}"'.format(self.folder["d1"].absolute_url_path()),
             cookies["plone.app.drafts.path"],
         )
         self.assertEqual(
-            '"{0}"'.format(uuid),
+            f'"{uuid}"',
             cookies["plone.app.drafts.targetKey"],
         )
         self.assertNotIn(
@@ -965,7 +964,7 @@ class TestDexterityIntegration(unittest.TestCase):
         browser.handleErrors = False
 
         self.folder.invokeFactory("MyDocument", "d1")
-        self.folder["d1"].title = u"New title"
+        self.folder["d1"].title = "New title"
 
         uuid = IUUID(self.folder["d1"])
 
@@ -987,19 +986,19 @@ class TestDexterityIntegration(unittest.TestCase):
         # We should now have cookies with the drafts information
         cookies = browser.cookies.forURL(browser.url)
         self.assertEqual(
-            '"{0}"'.format(self.folder["d1"].absolute_url_path()),
+            '"{}"'.format(self.folder["d1"].absolute_url_path()),
             cookies["plone.app.drafts.path"],
         )
         self.assertEqual(
-            '"{0}"'.format(uuid),
+            f'"{uuid}"',
             cookies["plone.app.drafts.targetKey"],
         )
         self.assertEqual(
-            '"{0}"'.format(TEST_USER_ID),
+            f'"{TEST_USER_ID}"',
             cookies["plone.app.drafts.userId"],
         )
         self.assertEqual(
-            '"{0}"'.format(draft.__name__),
+            f'"{draft.__name__}"',
             cookies["plone.app.drafts.draftName"],
         )
 
@@ -1027,7 +1026,7 @@ class TestDexterityIntegration(unittest.TestCase):
         browser.handleErrors = False
 
         self.folder.invokeFactory("MyDocument", "d1")
-        self.folder["d1"].title = u"New title"
+        self.folder["d1"].title = "New title"
 
         transaction.commit()
 
@@ -1050,11 +1049,11 @@ class TestDexterityIntegration(unittest.TestCase):
         # We should now have cookies with the drafts information
         cookies = browser.cookies.forURL(browser.url)
         self.assertEqual(
-            '"{0}"'.format(self.folder["d1"].absolute_url_path()),
+            '"{}"'.format(self.folder["d1"].absolute_url_path()),
             cookies["plone.app.drafts.path"],
         )
         self.assertEqual(
-            '"{0}"'.format(uuid),
+            f'"{uuid}"',
             cookies["plone.app.drafts.targetKey"],
         )
         self.assertNotIn(

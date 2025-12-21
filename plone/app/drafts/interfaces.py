@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from zope import schema
 from zope.interface import Interface
 
@@ -17,9 +16,9 @@ class IDraft(Interface):
     to it as required.
     """
 
-    _draftUserId = schema.TextLine(title=u"User id")
-    _draftTargetKey = schema.TextLine(title=u"Target object key")
-    __name__ = schema.TextLine(title=u"Unique draft name")
+    _draftUserId = schema.TextLine(title="User id")
+    _draftTargetKey = schema.TextLine(title="Target object key")
+    __name__ = schema.TextLine(title="Unique draft name")
 
 
 class IDraftStorage(Interface):
@@ -29,18 +28,18 @@ class IDraftStorage(Interface):
     """
 
     enabled = schema.Bool(
-        title=u"Whether drafting is enabled",
+        title="Whether drafting is enabled",
         default=True,
     )
 
     drafts = schema.Dict(
-        title=u"Drafts",
-        description=u"Use the methods below to inspect and manipulate this",
-        key_type=schema.TextLine(title=u"User id"),
+        title="Drafts",
+        description="Use the methods below to inspect and manipulate this",
+        key_type=schema.TextLine(title="User id"),
         value_type=schema.Dict(
-            key_type=schema.TextLine(title=u"Draft target key"),
+            key_type=schema.TextLine(title="Draft target key"),
             value_type=schema.Dict(
-                key_type=schema.TextLine(title=u"Draft name"),
+                key_type=schema.TextLine(title="Draft name"),
                 value_type=schema.Object(schema=IDraft),
             ),
         ),
@@ -145,18 +144,18 @@ class ICurrentDraftManagement(Interface):
     been set.
     """
 
-    userId = schema.TextLine(title=u"Current user id")
-    targetKey = schema.TextLine(title=u"Current target key")
-    draftName = schema.TextLine(title=u"Current draft name")
-    path = schema.TextLine(title=u"Path prefix in which the data should be retained")
+    userId = schema.TextLine(title="Current user id")
+    targetKey = schema.TextLine(title="Current target key")
+    draftName = schema.TextLine(title="Current draft name")
+    path = schema.TextLine(title="Path prefix in which the data should be retained")
     defaultPath = schema.TextLine(
-        title=u"Default path prefix for this request", readonly=True
+        title="Default path prefix for this request", readonly=True
     )
 
     draft = schema.Object(
-        title=u"Current draft",
-        description=u"If userId, targetKey and draftName are set, the "
-        u"draft will be lazily fetched from the storage",
+        title="Current draft",
+        description="If userId, targetKey and draftName are set, the "
+        "draft will be lazily fetched from the storage",
         schema=IDraft,
     )
 

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from AccessControl import getSecurityManager
 from plone.app.drafts.interfaces import ICurrentDraftManagement
 from plone.app.drafts.interfaces import IDraftStorage

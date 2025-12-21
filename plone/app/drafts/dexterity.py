@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from Acquisition import aq_base
 from plone.app.drafts.interfaces import ICurrentDraftManagement
 from plone.app.drafts.interfaces import IDraftable
@@ -76,10 +75,10 @@ class DefaultAddFormFieldWidgets(FieldWidgetsBase):
         if isDraftable(fti):
             current = ICurrentDraftManagement(request)
 
-            if current.targetKey != "++add++{0}".format(form.portal_type):
+            if current.targetKey != f"++add++{form.portal_type}":
                 beginDrafting(context, None)
                 current.path = "/".join(context.getPhysicalPath())
-                current.targetKey = "++add++{0}".format(form.portal_type)
+                current.targetKey = f"++add++{form.portal_type}"
                 current.save()
             else:
                 current.mark()
@@ -89,12 +88,12 @@ class DefaultAddFormFieldWidgets(FieldWidgetsBase):
                 context = DraftProxy(current.draft, target.__of__(context))
                 alsoProvides(request, IAddFormDrafting)
 
-        super(DefaultAddFormFieldWidgets, self).__init__(form, request, context)  # noqa
+        super().__init__(form, request, context)  # noqa
 
     def update(self):
         if IAddFormDrafting.providedBy(self.request):
             self.ignoreContext = False
-        super(DefaultAddFormFieldWidgets, self).update()
+        super().update()
 
 
 @adapter(IGroup, IAddFormDrafting, Interface)
@@ -104,13 +103,13 @@ class DefaultAddFormGroupFieldWidgets(FieldWidgetsBase):
         draft = getCurrentDraft(request)
         target = getattr(draft, "_draftAddFormTarget")
         context = DraftProxy(draft, target.__of__(context))
-        super(DefaultAddFormGroupFieldWidgets, self).__init__(
+        super().__init__(
             form, request, context
         )  # noqa
 
     def update(self):
         self.ignoreContext = False
-        super(DefaultAddFormGroupFieldWidgets, self).update()
+        super().update()
 
 
 @adapter(DefaultEditForm, IFormLayer, IDexterityContent)
@@ -133,7 +132,7 @@ class DefaultEditFormFieldWidgets(FieldWidgetsBase):
                 context = DraftProxy(current.draft, context)
                 alsoProvides(request, IEditFormDrafting)
 
-        super(DefaultEditFormFieldWidgets, self).__init__(
+        super().__init__(
             form, request, context
         )  # noqa
 
@@ -144,7 +143,7 @@ class DefaultEditFormGroupFieldWidgets(FieldWidgetsBase):
     def __init__(self, form, request, context):
         draft = getCurrentDraft(request)
         context = DraftProxy(draft, context)
-        super(DefaultEditFormGroupFieldWidgets, self).__init__(
+        super().__init__(
             form, request, context
         )  # noqa
 
@@ -163,7 +162,7 @@ class DefaultDisplayFormFieldWidgets(FieldWidgetsBase):
             if current.draft:
                 context = DraftProxy(current.draft, context)
 
-        super(DefaultDisplayFormFieldWidgets, self).__init__(
+        super().__init__(
             form, request, context
         )  # noqa
 
@@ -174,7 +173,7 @@ class DefaultDisplayFormGroupFieldWidgets(FieldWidgetsBase):
     def __init__(self, form, request, context):
         draft = getCurrentDraft(request)
         context = DraftProxy(draft, context)
-        super(DefaultDisplayFormGroupFieldWidgets, self).__init__(
+        super().__init__(
             form, request, context
         )  # noqa
 
@@ -201,7 +200,7 @@ def autosave(event):  # noqa
         if target is None:
             target = createContent(form.portal_type)
             target.id = ""
-            IMutableUUID(target).set("++add++{0}".format(form.portal_type))
+            IMutableUUID(target).set(f"++add++{form.portal_type}")
             draft._draftAddFormTarget = target
         target = target.__of__(context)
 
@@ -225,9 +224,9 @@ def autosave(event):  # noqa
         content = DraftProxy(draft, target)
 
         # Drop known non-draftable values
-        data = dict(
-            [(k, v) for k, v in data.items() if k not in AUTOSAVE_BLACKLIST]
-        )  # noqa
+        data = {
+            k: v for k, v in data.items() if k not in AUTOSAVE_BLACKLIST
+        }  # noqa
 
         # Values are applied within savepoint to allow revert of any
         # unexpected side-effects from setting field values

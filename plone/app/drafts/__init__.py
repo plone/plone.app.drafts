@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from plone.app.drafts.interfaces import ICurrentDraftManagement
 from plone.app.drafts.interfaces import IDrafting
 from plone.app.drafts.lifecycle import syncDraftOnSave
