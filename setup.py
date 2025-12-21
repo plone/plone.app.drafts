@@ -1,4 +1,3 @@
-from setuptools import find_packages
 from setuptools import setup
 
 
@@ -15,12 +14,13 @@ setup(
         "Development Status :: 4 - Beta",
         "Environment :: Web Environment",
         "Framework :: Plone",
-        "Framework :: Plone :: 5.2",
-        "Framework :: Plone :: 6.0",
+        "Framework :: Plone :: 6.2",
         "License :: OSI Approved :: GNU General Public License v2 (GPLv2)",
         "Programming Language :: Python",
-        "Programming Language :: Python :: 3.9",
         "Programming Language :: Python :: 3.10",
+        "Programming Language :: Python :: 3.11",
+        "Programming Language :: Python :: 3.12",
+        "Programming Language :: Python :: 3.13",
         "Topic :: Internet :: WWW/HTTP",
         "Topic :: Internet :: WWW/HTTP :: Dynamic Content",
         "Topic :: Software Development :: Libraries :: Python Modules",
@@ -30,14 +30,10 @@ setup(
     author_email="plone-developers@lists.sourceforge.net",
     url="http://plone.org",
     license="GPL",
-    packages=find_packages("src"),
-    namespace_packages=["plone", "plone.app"],
-    package_dir={"": "src"},
     include_package_data=True,
     zip_safe=False,
-    python_requires=">=3.9",
+    python_requires=">=3.10",
     install_requires=[
-        "setuptools",
         "plone.app.uuid",
         "plone.autoform",
         "plone.behavior>=1.1",
