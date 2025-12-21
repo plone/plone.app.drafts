@@ -82,7 +82,9 @@
 
           <a tal:attributes="
                href string:${context/absolute_url}/@@drafts?userId=${userId}&amp;targetKey=${quotedKey};
-             ">
+             "
+             i18n:translate="view_drafts"
+          >
                     View drafts
           </a>
 
@@ -92,6 +94,7 @@
                tal:attributes="
                  href targetInfo/url;
                "
+               i18n:translate="view_content_object"
             >View content object</a>
           </span>
         </tal:block>
@@ -103,6 +106,7 @@
         <input name="form.button.PruneTargets"
                type="submit"
                value="Remove drafts for selected targets"
+               i18n:attributes="value remove_drafts_from_targets"
         />
       </div>
     </form>

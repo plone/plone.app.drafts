@@ -91,6 +91,7 @@
         <input name="form.button.PruneDrafts"
                type="submit"
                value="Remove selected drafts"
+               i18n:attributes="value submit_remove_draft"
         />
       </div>
     </form>

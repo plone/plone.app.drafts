@@ -52,6 +52,7 @@
         <input name="form.button.PruneUsers"
                type="submit"
                value="Remove drafts for selected users"
+               i18n:attributes="value submit_drafts_from_user"
         />
       </div>
     </form>
