@@ -503,7 +503,7 @@ class TestCurrentDraft(unittest.TestCase):
         self.assertEqual(True, current.save())
 
         self.assertEqual(
-            {"value": "123", "quoted": True, "path": "/"},
+            {"value": "123", "Path": "/"},
             response.cookies["plone.app.drafts.targetKey"],
         )
         self.assertFalse("plone.app.drafts.draftName" in response.cookies)
@@ -514,11 +514,11 @@ class TestCurrentDraft(unittest.TestCase):
         self.assertEqual(True, current.save())
 
         self.assertEqual(
-            {"value": "123", "quoted": True, "path": "/"},
+            {"value": "123", "Path": "/"},
             response.cookies["plone.app.drafts.targetKey"],
         )
         self.assertEqual(
-            {"value": "draft-1", "quoted": True, "path": "/"},
+            {"value": "draft-1", "Path": "/"},
             response.cookies["plone.app.drafts.draftName"],
         )
         self.assertFalse("plone.app.drafts.path" in response.cookies)
@@ -534,15 +534,15 @@ class TestCurrentDraft(unittest.TestCase):
         self.assertEqual(True, current.save())
 
         self.assertEqual(
-            {"value": "123", "quoted": True, "path": "/test"},
+            {"value": "123", "Path": "/test"},
             response.cookies["plone.app.drafts.targetKey"],
         )
         self.assertEqual(
-            {"value": "draft-1", "quoted": True, "path": "/test"},
+            {"value": "draft-1", "Path": "/test"},
             response.cookies["plone.app.drafts.draftName"],
         )
         self.assertEqual(
-            {"value": "/test", "quoted": True, "path": "/test"},
+            {"value": "/test", "Path": "/test"},
             response.cookies["plone.app.drafts.path"],
         )
 
@@ -565,10 +565,9 @@ class TestCurrentDraft(unittest.TestCase):
             pass
 
         deletedToken = {
-            "expires": expires,
-            "max_age": 0,
-            "path": "/",
-            "quoted": True,
+            "Expires": expires,
+            "Max-Age": "0",
+            "Path": "/",
             "value": "deleted",
         }
 
@@ -588,7 +587,7 @@ class TestCurrentDraft(unittest.TestCase):
         current.path = "/test"
         current.discard()
 
-        deletedToken["path"] = "/test"
+        deletedToken["Path"] = "/test"
 
         self.assertEqual(
             deletedToken,
@@ -787,9 +786,9 @@ class TestDexterityIntegration(unittest.TestCase):
 
         # We should now have cookies with the drafts information
         cookies = browser.cookies.forURL(browser.url)
-        self.assertEqual('"/plone"', cookies["plone.app.drafts.path"])
+        self.assertEqual("/plone", cookies["plone.app.drafts.path"])
         self.assertEqual(
-            f'"{self.get_portal_target_key()}"',
+            f"{self.get_portal_target_key()}",
             cookies["plone.app.drafts.targetKey"],
         )
         self.assertNotIn(
@@ -827,9 +826,9 @@ class TestDexterityIntegration(unittest.TestCase):
 
         # We should now have cookies with the drafts information
         cookies = browser.cookies.forURL(browser.url)
-        self.assertEqual('"/plone"', cookies["plone.app.drafts.path"])
+        self.assertEqual("/plone", cookies["plone.app.drafts.path"])
         self.assertEqual(
-            f'"{self.get_portal_target_key()}"',
+            f"{self.get_portal_target_key()}",
             cookies["plone.app.drafts.targetKey"],
         )
         self.assertNotIn(
@@ -884,11 +883,11 @@ class TestDexterityIntegration(unittest.TestCase):
         # We should now have cookies with the drafts information
         cookies = browser.cookies.forURL(browser.url)
         self.assertEqual(
-            f'"{self.folder.absolute_url_path()}"',
+            f"{self.folder.absolute_url_path()}",
             cookies["plone.app.drafts.path"],
         )
         self.assertEqual(
-            f'"{IUUID(self.folder)}"',
+            f"{IUUID(self.folder)}",
             cookies["plone.app.drafts.targetKey"],
         )
         self.assertNotIn(
@@ -930,11 +929,11 @@ class TestDexterityIntegration(unittest.TestCase):
         # We should now have cookies with the drafts information
         cookies = browser.cookies.forURL(browser.url)
         self.assertEqual(
-            '"{}"'.format(self.folder["d1"].absolute_url_path()),
+            "{}".format(self.folder["d1"].absolute_url_path()),
             cookies["plone.app.drafts.path"],
         )
         self.assertEqual(
-            f'"{uuid}"',
+            f"{uuid}",
             cookies["plone.app.drafts.targetKey"],
         )
         self.assertNotIn(
@@ -984,19 +983,19 @@ class TestDexterityIntegration(unittest.TestCase):
         # We should now have cookies with the drafts information
         cookies = browser.cookies.forURL(browser.url)
         self.assertEqual(
-            '"{}"'.format(self.folder["d1"].absolute_url_path()),
+            "{}".format(self.folder["d1"].absolute_url_path()),
             cookies["plone.app.drafts.path"],
         )
         self.assertEqual(
-            f'"{uuid}"',
+            f"{uuid}",
             cookies["plone.app.drafts.targetKey"],
         )
         self.assertEqual(
-            f'"{TEST_USER_ID}"',
+            f"{TEST_USER_ID}",
             cookies["plone.app.drafts.userId"],
         )
         self.assertEqual(
-            f'"{draft.__name__}"',
+            f"{draft.__name__}",
             cookies["plone.app.drafts.draftName"],
         )
 
@@ -1047,11 +1046,11 @@ class TestDexterityIntegration(unittest.TestCase):
         # We should now have cookies with the drafts information
         cookies = browser.cookies.forURL(browser.url)
         self.assertEqual(
-            '"{}"'.format(self.folder["d1"].absolute_url_path()),
+            "{}".format(self.folder["d1"].absolute_url_path()),
             cookies["plone.app.drafts.path"],
         )
         self.assertEqual(
-            f'"{uuid}"',
+            f"{uuid}",
             cookies["plone.app.drafts.targetKey"],
         )
         self.assertNotIn(
