@@ -1,11 +1,12 @@
 Changelog
 =========
 
-2.0.1 (unreleased)
-------------------
+.. You should *NOT* be adding new change log entries to this file.
+   You should create a file in the news directory instead.
+   For helpful instructions, please see:
+   https://github.com/plone/plone.releaser/blob/master/ADD-A-NEWS-ITEM.rst
 
-- Nothing changed yet.
-
+.. towncrier release notes start
 
 2.0.0 (2022-07-22)
 ------------------
@@ -25,7 +26,7 @@ Changelog
 1.1.2 (2017-07-03)
 ------------------
 
-- Fix issue where draft sync failed because draft might have been withotu aq wrapper
+- Fix issue where draft sync failed because draft might have been without aq wrapper
   [datakurre]
 
 1.1.1 (2016-09-09)

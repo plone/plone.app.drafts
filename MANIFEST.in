@@ -1,9 +1,10 @@
 include *.rst
 
 recursive-include docs *
-recursive-include plone *
+recursive-include src *
 
 global-exclude *pyc
 
 exclude bootstrap.py
 exclude *.cfg .coveragerc .github *.ini
+recursive-exclude news *

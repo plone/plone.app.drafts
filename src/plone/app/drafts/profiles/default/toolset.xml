@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<tool-setup>
+  <required class="plone.app.drafts.storage.Storage"
+            tool_id="portal_drafts"
+  />
+</tool-setup>

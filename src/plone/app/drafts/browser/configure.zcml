@@ -1,0 +1,39 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:browser="http://namespaces.zope.org/browser"
+    i18n_domain="plone.app.drafts"
+    >
+  <include
+      package="Products.CMFCore"
+      file="permissions.zcml"
+      />
+  <browser:resource
+      name="plone.app.drafts.gif"
+      image="tool.gif"
+      />
+
+  <browser:page
+      name="overview"
+      for="..interfaces.IDraftStorage"
+      class=".view.View"
+      template="overview.pt"
+      permission="cmf.ManagePortal"
+      />
+
+  <browser:page
+      name="targets"
+      for="..interfaces.IDraftStorage"
+      class=".view.View"
+      template="targets.pt"
+      permission="cmf.ManagePortal"
+      />
+
+  <browser:page
+      name="drafts"
+      for="..interfaces.IDraftStorage"
+      class=".view.View"
+      template="drafts.pt"
+      permission="cmf.ManagePortal"
+      />
+
+</configure>

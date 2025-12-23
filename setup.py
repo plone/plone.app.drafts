@@ -1,11 +1,7 @@
-# -*- coding: utf-8 -*-
-from setuptools import find_packages
 from setuptools import setup
 
-import os
 
-
-version = "2.0.1.dev0"
+version = "3.0.0.dev0"
 
 setup(
     name="plone.app.drafts",
@@ -18,14 +14,13 @@ setup(
         "Development Status :: 4 - Beta",
         "Environment :: Web Environment",
         "Framework :: Plone",
-        "Framework :: Plone :: 5.2",
-        "Framework :: Plone :: 6.0",
+        "Framework :: Plone :: 6.2",
         "License :: OSI Approved :: GNU General Public License v2 (GPLv2)",
         "Programming Language :: Python",
-        "Programming Language :: Python :: 3.7",
-        "Programming Language :: Python :: 3.8",
-        "Programming Language :: Python :: 3.9",
         "Programming Language :: Python :: 3.10",
+        "Programming Language :: Python :: 3.11",
+        "Programming Language :: Python :: 3.12",
+        "Programming Language :: Python :: 3.13",
         "Topic :: Internet :: WWW/HTTP",
         "Topic :: Internet :: WWW/HTTP :: Dynamic Content",
         "Topic :: Software Development :: Libraries :: Python Modules",
@@ -35,25 +30,31 @@ setup(
     author_email="plone-developers@lists.sourceforge.net",
     url="http://plone.org",
     license="GPL",
-    packages=find_packages(exclude=["ez_setup"]),
-    namespace_packages=["plone", "plone.app"],
     include_package_data=True,
     zip_safe=False,
+    python_requires=">=3.10",
     install_requires=[
-        "setuptools",
-        "ZODB3",
-        "zope.interface",
-        "zope.component",
-        "zope.schema",
-        "zope.annotation",
         "plone.app.uuid",
+        "plone.autoform",
         "plone.behavior>=1.1",
-        "Zope2",
+        "plone.dexterity",
+        "plone.protect",
+        "plone.uuid",
+        "Products.CMFCore",
+        "Products.GenericSetup",
+        "z3c.form",
+        "zope.annotation",
+        "zope.component",
+        "zope.interface",
+        "zope.schema",
+        "Zope",
     ],
     extras_require={
         "test": [
+            "plone.app.contenttypes",
             "plone.app.testing",
             "plone.app.dexterity",
+            "plone.testing",
         ],
     },
     entry_points="""
