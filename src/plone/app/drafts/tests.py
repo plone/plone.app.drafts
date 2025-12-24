@@ -1,4 +1,3 @@
-from pkg_resources import parse_version
 from plone.app.drafts.draft import Draft
 from plone.app.drafts.interfaces import DRAFT_NAME_KEY
 from plone.app.drafts.interfaces import ICurrentDraftManagement
@@ -30,7 +29,6 @@ from zope.component import provideAdapter
 from zope.component import queryUtility
 from zope.interface import implementer
 
-import pkg_resources
 import transaction
 import unittest
 
@@ -553,19 +551,8 @@ class TestCurrentDraft(unittest.TestCase):
         current = ICurrentDraftManagement(request)
         current.discard()
 
-        expires = "Wed, 31-Dec-97 23:59:59 GMT"
-
-        try:
-            # expires date changed in ZPublisher.HTTPResponse
-            # see https://github.com/zopefoundation/Zope/commit/77f483a22d6b0cb00883006cf38928cda77b75f9
-            zope_version = pkg_resources.get_distribution("Zope").version
-            if parse_version(zope_version) >= parse_version("4.0b8"):
-                expires = "Wed, 31 Dec 1997 23:59:59 GMT"
-        except Exception:
-            pass
-
         deletedToken = {
-            "Expires": expires,
+            "Expires": "Wed, 31 Dec 1997 23:59:59 GMT",
             "Max-Age": "0",
             "Path": "/",
             "value": "deleted",

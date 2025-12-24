@@ -13,6 +13,7 @@ from plone.dexterity.browser.edit import DefaultEditForm
 from plone.dexterity.interfaces import IDexterityContent
 from plone.dexterity.interfaces import IDexterityFTI
 from plone.dexterity.utils import createContent
+from plone.protect.interfaces import IDisableCSRFProtection
 from plone.uuid.interfaces import IMutableUUID
 from plone.uuid.interfaces import IUUID
 from z3c.form.field import FieldWidgets as FieldWidgetsBase
@@ -31,14 +32,6 @@ from zope.interface import Interface
 from zope.lifecycleevent import IObjectAddedEvent
 
 import transaction
-
-
-try:
-    from plone.protect.interfaces import IDisableCSRFProtection
-
-    HAS_PLONE_PROTECT = True
-except ImportError:
-    HAS_PLONE_PROTECT = False
 
 
 AUTOSAVE_BLACKLIST = [
@@ -233,9 +226,8 @@ def autosave(event):  # noqa
         for key, value in values.items():
             setattr(draft, key, value)
 
-        # Disable Plone 5 implicit CSRF to update draft
-        if HAS_PLONE_PROTECT:
-            alsoProvides(request, IDisableCSRFProtection)
+        # Disable implicit CSRF to update draft
+        alsoProvides(request, IDisableCSRFProtection)
 
 
 @adapter(IDexterityContent, IObjectAddedEvent)
