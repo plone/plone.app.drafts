@@ -1,11 +1,6 @@
 from datetime import datetime
 from plone.app.uuid.utils import uuidToObject
-
-
-try:
-    from urllib import quote
-except ImportError:
-    from urllib.parse import quote
+from urllib.parse import quote
 
 
 class View:
