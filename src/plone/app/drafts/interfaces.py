@@ -1,7 +1,6 @@
 from zope import schema
 from zope.interface import Interface
 
-
 USERID_KEY = "plone.app.drafts.userId"
 TARGET_KEY = "plone.app.drafts.targetKey"
 PATH_KEY = "plone.app.drafts.path"
