@@ -9,7 +9,6 @@ from zope.interface import providedBy
 from zope.interface.declarations import getObjectSpecification
 from zope.interface.declarations import ObjectSpecificationDescriptor
 
-
 _marker = object()
 
 

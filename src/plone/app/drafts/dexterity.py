@@ -33,7 +33,6 @@ from zope.lifecycleevent import IObjectAddedEvent
 
 import transaction
 
-
 AUTOSAVE_BLACKLIST = [
     "IShortName.id",
 ]

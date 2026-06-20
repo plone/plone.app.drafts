@@ -5,7 +5,6 @@ from plone.app.drafts.utils import getDefaultKey
 from plone.app.drafts.utils import syncDraft
 from zope.component import queryUtility
 
-
 # Main event handlers
 
 
