@@ -1,12 +1,15 @@
+from pathlib import Path
 from setuptools import setup
 
 version = "3.0.1.dev0"
+
+long_description = f'{Path("README.rst").read_text()}\n{Path("CHANGES.rst").read_text()}'
 
 setup(
     name="plone.app.drafts",
     version=version,
     description="Low-level container for draft content",
-    long_description=open("README.rst").read() + "\n" + open("CHANGES.rst").read(),
+    long_description=long_description,
     # Get more strings from
     # http://pypi.python.org/pypi?%3Aaction=list_classifiers
     classifiers=[
